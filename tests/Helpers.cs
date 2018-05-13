@@ -43,4 +43,14 @@ namespace MagicConfig.Tests.Helpers
 		public int ignored_int;
 		public string ignored_string;
 	}
+
+	public class MyInt: IEquatable<MyInt>
+	{
+		private readonly int val;
+		public MyInt(int val) { this.val = val; }
+		public bool Equals(MyInt other) {
+			return !object.ReferenceEquals(other, null) && val == other.val;
+		}
+		public override string ToString() => $"MyInt({val})";
+	}
 }

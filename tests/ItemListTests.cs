@@ -247,5 +247,23 @@ namespace MagicConfig.Tests
 			Assert.Equal(new Dictionary<int, int> { {3, 2}, {5, 1}, {8, 1} }, dels);
 			Assert.Equal(new Dictionary<int, int> { {6, 1}, {4, 2}, {9, 2} }, adds);
 		}
+
+		[Fact]
+		public void ItemListAssignKeepsReferences()
+		{
+			var firstThree = new MyInt(3);
+			var firstFour = new MyInt(4);
+			var secondThree = new MyInt(3);
+			var newFive = new MyInt(5);
+			ItemList<MyInt> il  = new ItemList<MyInt> { firstFour, firstThree,   secondThree,  new MyInt(3), new MyInt(4) }; // 4 3 3 3 4
+			ItemList<MyInt> il2 = new ItemList<MyInt> { newFive,   new MyInt(3), new MyInt(4), new MyInt(3) };               // 5 3 4 3
+
+			il.Assign(il2);
+
+			Assert.Same(il[0], newFive);
+			Assert.Same(il[1], firstThree);
+			Assert.Same(il[2], firstFour);
+			Assert.Same(il[3], secondThree);
+		}
 	}
 }
