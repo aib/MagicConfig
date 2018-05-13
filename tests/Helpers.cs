@@ -24,4 +24,23 @@ namespace MagicConfig.Tests.Helpers
 		public override bool Equals(ConfigItem other) { return true; }
 		public override void Assign(ConfigItem other) {}
 	}
+
+	public class MyComposite: StaticMap<MyComposite>
+	{
+		public SingleItem<int> si;
+		public SingleItem<string> ss1;
+		public SingleItem<string> ss2;
+
+		public class MyNested: StaticMap<MyNested> {
+			public SingleItem<int> x;
+			public SingleItem<int> y;
+			public SingleItem<string> s;
+		}
+		public MyNested nested;
+
+		public ConfigItem ci;
+
+		public int ignored_int;
+		public string ignored_string;
+	}
 }
