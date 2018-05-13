@@ -8,7 +8,7 @@ namespace MagicConfig
 	// Only members of the type ConfigItem are considered
 	public class StaticMap<T>: Map
 	{
-		public class UpdatedArgs: EventArgs { public StaticMap<T> NewValue; }
+		public class UpdatedArgs: EventArgs {}
 		public event EventHandler<UpdatedArgs> Updated;
 
 		public StaticMap() {
@@ -60,7 +60,7 @@ namespace MagicConfig
 				}
 
 				if (updated) {
-					Updated?.Invoke(this, new UpdatedArgs { NewValue = otherMap });
+					Updated?.Invoke(this, new UpdatedArgs());
 				}
 			} else {
 				throw new InvalidTypeAssignmentException(this, other);
