@@ -98,6 +98,38 @@ namespace MagicConfig.Tests
 		}
 
 		[Fact]
+		public void ItemListEqualityWithDuplicateValues()
+		{
+			{
+				ItemList<int> il1 = new ItemList<int> { 3, 3, 4, 4, 5 };
+				ItemList<int> il2 = new ItemList<int> { 3, 3, 4, 4, 5 };
+				Assert.Equal(il1, il2);
+				Assert.True(il1.Equals(il2));
+			}
+
+			{
+				ItemList<int> il1 = new ItemList<int> { 3, 4, 5 };
+				ItemList<int> il2 = new ItemList<int> { 3, 4, 4, 5 };
+				Assert.NotEqual(il1, il2);
+				Assert.False(il1.Equals(il2));
+			}
+
+			{
+				ItemList<int> il1 = new ItemList<int> { 3, 3, 4, 5 };
+				ItemList<int> il2 = new ItemList<int> { 3, 4, 4, 5};
+				Assert.NotEqual(il1, il2);
+				Assert.False(il1.Equals(il2));
+			}
+
+			{
+				ItemList<int> il1 = new ItemList<int> { 3, 4, 4, 5 };
+				ItemList<int> il2 = new ItemList<int> { 3, 4, 5, 6 };
+				Assert.NotEqual(il1, il2);
+				Assert.False(il1.Equals(il2));
+			}
+		}
+
+		[Fact]
 		public void ItemListEqualsCallsItemEquals()
 		{
 			{
@@ -123,16 +155,31 @@ namespace MagicConfig.Tests
 		}
 
 		[Fact]
-		public void ItemListAssignmentChangesValue()
+		public void ItemListAssignmentWithDuplicateValues()
 		{
-			ItemList<int> il  = new ItemList<int> { 3, 4, 5 };
-			ItemList<int> il2 = new ItemList<int> { 2, 4, 6 };
+			{
+				ItemList<int> il  = new ItemList<int> { 100, 3, 3, 5,   1 };
+				ItemList<int> il2 = new ItemList<int> {   1, 5, 5, 3, 100 };
 
-			il.Assign(il2);
-			Assert.Equal(3, il.Count);
-			Assert.Contains(2, il);
-			Assert.Contains(4, il);
-			Assert.Contains(6, il);
+				il.Assign(il2);
+				Assert.Equal(5, il.Count);
+				Assert.Equal(1, il[0]);
+				Assert.Equal(5, il[1]);
+				Assert.Equal(5, il[2]);
+				Assert.Equal(3, il[3]);
+				Assert.Equal(100, il[4]);
+			}
+
+			{
+				ItemList<int> il  = new ItemList<int> { 3, 4, 5 };
+				ItemList<int> il2 = new ItemList<int> { 2, 4, 6 };
+
+				il.Assign(il2);
+				Assert.Equal(3, il.Count);
+				Assert.Equal(2, il[0]);
+				Assert.Equal(4, il[1]);
+				Assert.Equal(6, il[2]);
+			}
 		}
 
 		[Fact]
@@ -179,6 +226,26 @@ namespace MagicConfig.Tests
 			Assert.False(othersAdded);
 
 			Assert.False(itemUpdatesCalled);
+		}
+
+		[Fact]
+		public void ItemListEventsWithDuplicateValues()
+		{
+			ItemList<int> il  = new ItemList<int> { 100, 3, 2, 3, 3, 5, 5, 4, 8, 1 };
+			ItemList<int> il2 = new ItemList<int> {   1, 6, 3, 4, 5, 4, 4, 2, 9, 9, 100 };
+
+			void increment<T>(Dictionary<T, int> dict, T key) { dict.TryGetValue(key, out int value); dict[key] = value + 1; }
+			var adds = new Dictionary<int, int>();
+			var dels = new Dictionary<int, int>();
+			void deleteHandler(object sender, ItemList<int>.DeletedArgs args) { increment(dels, args.OldItem); }
+			void addHandler   (object sender, ItemList<int>.AddedArgs args)   { increment(adds, args.NewItem); }
+			il.Deleted += deleteHandler;
+			il.Added   += addHandler;
+
+			il.Assign(il2);
+
+			Assert.Equal(new Dictionary<int, int> { {3, 2}, {5, 1}, {8, 1} }, dels);
+			Assert.Equal(new Dictionary<int, int> { {6, 1}, {4, 2}, {9, 2} }, adds);
 		}
 	}
 }
