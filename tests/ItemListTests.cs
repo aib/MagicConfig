@@ -63,6 +63,13 @@ namespace MagicConfig.Tests
 
 			{
 				ItemList<int> il1 = new ItemList<int> { 3, 4, 5 };
+				ItemList<int> il2 = new ItemList<int> { 5, 4, 3 };
+				Assert.NotEqual(il1, il2);
+				Assert.False(il1.Equals(il2));
+			}
+
+			{
+				ItemList<int> il1 = new ItemList<int> { 3, 4, 5 };
 				ItemList<int> il2 = new ItemList<int> { 3, 4 };
 				Assert.NotEqual(il1, il2);
 				Assert.False(il1.Equals(il2));
@@ -94,6 +101,13 @@ namespace MagicConfig.Tests
 				ItemList<string> il2 = new ItemList<string> { "foo", "bar" };
 				Assert.Equal(il1, il2);
 				Assert.True(il1.Equals(il2));
+			}
+
+			{
+				ItemList<string> il1 = new ItemList<string> { "foo", "bar" };
+				ItemList<string> il2 = new ItemList<string> { "bar", "foo" };
+				Assert.NotEqual(il1, il2);
+				Assert.False(il1.Equals(il2));
 			}
 		}
 
