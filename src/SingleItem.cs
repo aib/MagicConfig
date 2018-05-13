@@ -4,7 +4,7 @@ namespace MagicConfig
 {
 	// This class holds a single value, usually a scalar
 	// Updates to this class destroy the old value
-	public class SingleItem<T>: ConfigItem
+	public class SingleItem<T>: ConfigItem, IEquatable<SingleItem<T>>
 		where T: IEquatable<T>
 	{
 		public class UpdatedArgs: EventArgs { public T OldValue; public T NewValue; }
@@ -22,9 +22,14 @@ namespace MagicConfig
 			return new SingleItem<T> { value = v };
 		}
 
+		public bool Equals(SingleItem<T> other)
+		{
+			return !object.ReferenceEquals(other, null) && value.Equals(other.value);
+		}
+
 		public override bool Equals(ConfigItem other)
 		{
-			return (other is SingleItem<T> otherItem) && value.Equals(otherItem.value);
+			return (other is SingleItem<T> otherItem) && Equals(otherItem);
 		}
 
 		public override void Assign(ConfigItem other)
