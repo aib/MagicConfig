@@ -231,6 +231,15 @@ namespace MagicConfig.Tests
 			}
 			il.Added += addHandler;
 
+			bool updateCalled = false;
+			void updateHandler(object sender, ItemList<SingleItem<int>>.UpdatedArgs args) {
+				Assert.False(updateCalled);
+				updateCalled = true;
+				Assert.Same(il, sender);
+				Assert.Equal(il2, args.NewList);
+			}
+			il.Updated += updateHandler;
+
 			il.Assign(il2);
 
 			Assert.True(threeDeleted);
@@ -239,7 +248,35 @@ namespace MagicConfig.Tests
 			Assert.True(sixAdded);
 			Assert.False(othersAdded);
 
+			Assert.True(updateCalled);
 			Assert.False(itemUpdatesCalled);
+		}
+
+		[Fact]
+		public void ItemListEventsWithOnlyDifferentOrder()
+		{
+			ItemList<string> il  = new ItemList<string> { "foo", "bar" };
+			ItemList<string> il2 = new ItemList<string> { "bar", "foo" };
+
+			bool deleteCalled = false;
+			void deleteHandler(object sender, ItemList<string>.DeletedArgs args) { deleteCalled = true; }
+			il.Deleted += deleteHandler;
+
+			bool addCalled = false;
+			void addHandler(object sender, ItemList<string>.AddedArgs args) { addCalled = true; }
+			il.Added += addHandler;
+
+			bool updateCalled = false;
+			void updateHandler(object sender, ItemList<string>.UpdatedArgs args) {
+				Assert.False(updateCalled);
+				updateCalled = true;
+			}
+			il.Updated += updateHandler;
+
+			il.Assign(il2);
+			Assert.False(deleteCalled);
+			Assert.False(addCalled);
+			Assert.True(updateCalled);
 		}
 
 		[Fact]
@@ -256,10 +293,20 @@ namespace MagicConfig.Tests
 			il.Deleted += deleteHandler;
 			il.Added   += addHandler;
 
+			bool updateCalled = false;
+			void updateHandler(object sender, ItemList<int>.UpdatedArgs args) {
+				Assert.False(updateCalled);
+				updateCalled = true;
+				Assert.Same(il, sender);
+				Assert.Equal(il2, args.NewList);
+			}
+			il.Updated += updateHandler;
+
 			il.Assign(il2);
 
 			Assert.Equal(new Dictionary<int, int> { {3, 2}, {5, 1}, {8, 1} }, dels);
 			Assert.Equal(new Dictionary<int, int> { {6, 1}, {4, 2}, {9, 2} }, adds);
+			Assert.True(updateCalled);
 		}
 
 		[Fact]
