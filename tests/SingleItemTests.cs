@@ -73,7 +73,7 @@ namespace MagicConfig.Tests
 		public void SingleItemInvalidAssignmentThrows()
 		{
 			SingleItem<int> i1 = 4;
-			MyItem i2 = new MyItem();
+			MyFalseEquatableItem i2 = new MyFalseEquatableItem();
 			Assert.Throws<ConfigItem.InvalidTypeAssignmentException>(() => i1.Assign(i2));
 		}
 
