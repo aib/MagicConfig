@@ -6,7 +6,7 @@ using System.Linq;
 namespace MagicConfig
 {
 	// This class holds a list or array of values
-	public class ItemList<T>: ConfigItem, IList<T>
+	public class ItemList<T>: ConfigItem, IList<T>, IEquatable<ItemList<T>>
 		where T: IEquatable<T>
 	{
 		public class AddedArgs:   EventArgs { public T NewItem; }
@@ -26,13 +26,15 @@ namespace MagicConfig
 			return new ItemList<T> { list = l };
 		}
 
+		public bool Equals(ItemList<T> other)
+		{
+			return !object.ReferenceEquals(other, null)
+				&& !(list.Any(l => !other.list.Any(l.Equals)) || other.Any(r => !list.Any(r.Equals)));
+		}
+
 		public override bool Equals(ConfigItem other)
 		{
-			if (other is ItemList<T> otherList) {
-				return !(list.Any(l => !otherList.list.Any(l.Equals)) || otherList.Any(r => !list.Any(r.Equals)));
-			} else {
-				return false;
-			}
+			return (other is ItemList<T> otherList) && Equals(otherList);
 		}
 
 		public override void Assign(ConfigItem other)
