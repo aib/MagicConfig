@@ -6,7 +6,7 @@ namespace MagicConfig
 {
 	// This class is the key-value map of the given type
 	// Only members of the type ConfigItem are considered
-	public class StaticMap<T>: Map
+	public class StaticMap<T>: Map, IEquatable<StaticMap<T>>
 	{
 		public class UpdatedArgs: EventArgs {}
 		public event EventHandler<UpdatedArgs> Updated;
@@ -26,13 +26,18 @@ namespace MagicConfig
 				);
 		}
 
+		public bool Equals(StaticMap<T> other)
+		{
+			return !object.ReferenceEquals(other, null)
+				&& _map.Keys.All(
+					k => (object.ReferenceEquals(_map[k].Get(), null) && object.ReferenceEquals(other._map[k].Get(), null)) ||
+						_map[k].Get().Equals(other._map[k].Get())
+				);
+		}
+
 		public override bool Equals(ConfigItem other)
 		{
-			return (other is StaticMap<T> otherMap)
-				&& _map.Keys.All(
-					k => (object.ReferenceEquals(_map[k].Get(), null) && object.ReferenceEquals(otherMap._map[k].Get(), null)) ||
-						_map[k].Get().Equals(otherMap._map[k].Get())
-				);
+			return (other is StaticMap<T> otherMap) && Equals(otherMap);
 		}
 
 		public override void Assign(ConfigItem other)
