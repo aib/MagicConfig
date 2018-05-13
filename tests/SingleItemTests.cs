@@ -42,6 +42,9 @@ namespace MagicConfig.Tests
 		{
 			SingleItem<int> si = 42;
 			Assert.False(si.Equals(null));
+			Assert.False(si.Equals((SingleItem<int>) null));
+			Assert.False(si.Equals((SingleItem<string>) null));
+			Assert.False(si.Equals((ConfigItem) null));
 		}
 
 		[Fact]
