@@ -97,6 +97,7 @@ namespace MagicConfig.Tests
 
 			bool updateCalled = false;
 			void updateHandler(object sender, SingleItem<int>.UpdatedArgs args) {
+				Assert.False(updateCalled);
 				updateCalled = true;
 				Assert.Same(si1, sender);
 				Assert.Equal(4, args.OldValue);
