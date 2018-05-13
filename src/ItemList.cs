@@ -28,8 +28,13 @@ namespace MagicConfig
 
 		public bool Equals(ItemList<T> other)
 		{
-			return !object.ReferenceEquals(other, null)
-				&& !(list.Any(l => !other.list.Any(l.Equals)) || other.Any(r => !list.Any(r.Equals)));
+			if (object.ReferenceEquals(other, null)) return false;
+			if (list.Count != other.list.Count) return false;
+
+			for (int i = 0; i < list.Count; ++i) {
+				if (!list[i].Equals(other.list[i])) return false;
+			}
+			return true;
 		}
 
 		public override bool Equals(ConfigItem other)
@@ -40,18 +45,23 @@ namespace MagicConfig
 		public override void Assign(ConfigItem other)
 		{
 			if (other is ItemList<T> otherList) {
-				var left  = list.Where(l => !otherList.list.Any(l.Equals)).ToList();
-				var right = otherList.list.Where(r => !list.Any(r.Equals)).ToList();
+				var newList = new List<T>();
+				var added = new List<T>();
 
-				foreach (var l in left) {
-					list.Remove(l);
-					Deleted?.Invoke(this, new DeletedArgs { OldItem = l });
+				foreach (var r in otherList.list) {
+					int io = list.FindIndex(r.Equals);
+					if (io == -1) {
+						newList.Add(r);
+						added.Add(r);
+					} else {
+						newList.Add(list[io]);
+						list.RemoveAt(io);
+					}
 				}
 
-				foreach (var r in right) {
-					list.Add(r);
-					Added?.Invoke(this, new AddedArgs { NewItem = r });
-				}
+				list.ForEach(i => Deleted?.Invoke(this, new DeletedArgs { OldItem = i }));
+				added.ForEach(i => Added?.Invoke(this, new AddedArgs { NewItem = i }));
+				list = newList;
 			} else {
 				throw new InvalidTypeAssignmentException(this, other);
 			}
