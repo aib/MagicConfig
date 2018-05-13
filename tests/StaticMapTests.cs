@@ -86,7 +86,6 @@ namespace MagicConfig.Tests
 				Assert.False(updateCalled);
 				updateCalled = true;
 				Assert.Same(sm, sender);
-				Assert.True(sm.Equals(args.NewValue));
 				Assert.Equal("foo", sm.ss1);
 			}
 			sm.Updated += updateHandler;
