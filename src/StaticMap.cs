@@ -40,8 +40,6 @@ namespace MagicConfig
 		public override void Assign(ConfigItem other)
 		{
 			if (other is StaticMap<T> otherMap) {
-				bool updated = false;
-
 				foreach (var key in _mapKeys()) {
 					var oldItem = _mapGet(key);
 					var newItem = otherMap._mapGet(key);
@@ -51,19 +49,15 @@ namespace MagicConfig
 							continue;
 						} else {
 							_mapSet(key, newItem);
-							updated = true;
 						}
 					} else {
 						if (!oldItem.Equals(newItem)) {
 							oldItem.Assign(newItem);
-							updated = true;
 						}
 					}
 				}
 
-				if (updated) {
-					Updated?.Invoke(this, new UpdatedArgs());
-				}
+				Updated?.Invoke(this, new UpdatedArgs());
 			} else {
 				throw new InvalidTypeAssignmentException(this, other);
 			}
