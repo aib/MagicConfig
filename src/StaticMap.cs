@@ -7,7 +7,7 @@ namespace MagicConfig
 {
 	// This class is the key-value map of the given type
 	// Only members of the type ConfigItem are considered
-	public class StaticMap<T>: Map, IEquatable<StaticMap<T>>
+	public class StaticMap<T>: Map<ConfigItem>, IEquatable<StaticMap<T>>
 	{
 		public class UpdatedArgs: EventArgs {}
 		public event EventHandler<UpdatedArgs> Updated;
