@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 
@@ -11,27 +12,23 @@ namespace MagicConfig
 		public class UpdatedArgs: EventArgs {}
 		public event EventHandler<UpdatedArgs> Updated;
 
+		private readonly Dictionary<string, FieldInfo> fields;
+
 		public StaticMap() {
-			_map = GetType()
+			fields = GetType()
 				.GetMembers(BindingFlags.Public | BindingFlags.Instance)
 				.Where(mi => mi.MemberType == MemberTypes.Field)
 				.Select(mi => mi as FieldInfo).Where(fi => fi != null)
 				.Where(fi => typeof(ConfigItem).IsAssignableFrom(fi.FieldType))
-				.ToDictionary(
-					fi => fi.Name,
-					fi => new _Mapping {
-						Get = () => (ConfigItem) fi.GetValue(this),
-						Set = (val) => fi.SetValue(this, val)
-					}
-				);
+				.ToDictionary(fi => fi.Name);
 		}
 
 		public bool Equals(StaticMap<T> other)
 		{
 			return !object.ReferenceEquals(other, null)
-				&& _map.Keys.All(
-					k => (object.ReferenceEquals(_map[k].Get(), null) && object.ReferenceEquals(other._map[k].Get(), null)) ||
-						_map[k].Get().Equals(other._map[k].Get())
+				&& _mapKeys().All(
+					k => (object.ReferenceEquals(_mapGet(k), null) && object.ReferenceEquals(other._mapGet(k), null)) ||
+						_mapGet(k).Equals(other._mapGet(k))
 				);
 		}
 
@@ -45,15 +42,15 @@ namespace MagicConfig
 			if (other is StaticMap<T> otherMap) {
 				bool updated = false;
 
-				foreach (var key in _map.Keys) {
-					var oldItem = _map[key].Get();
-					var newItem = otherMap._map[key].Get();
+				foreach (var key in _mapKeys()) {
+					var oldItem = _mapGet(key);
+					var newItem = otherMap._mapGet(key);
 
 					if (object.ReferenceEquals(oldItem, null)) {
 						if (object.ReferenceEquals(newItem, null)) {
 							continue;
 						} else {
-							_map[key].Set(newItem);
+							_mapSet(key, newItem);
 							updated = true;
 						}
 					} else {
@@ -71,5 +68,9 @@ namespace MagicConfig
 				throw new InvalidTypeAssignmentException(this, other);
 			}
 		}
+
+		protected override IEnumerable<string> _mapKeys() => fields.Keys;
+		protected override ConfigItem _mapGet(string key) => (ConfigItem) fields[key].GetValue(this);
+		protected override void _mapSet(string key, ConfigItem value) => fields[key].SetValue(this, value);
 	}
 }
