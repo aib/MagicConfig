@@ -5,10 +5,8 @@ namespace MagicConfig
 {
 	public abstract class Map: ConfigItem
 	{
-		protected class _Mapping {
-			public Func<ConfigItem> Get;
-			public Action<ConfigItem> Set;
-		}
-		protected IReadOnlyDictionary<string, _Mapping> _map;
+		protected abstract IEnumerable<string> _mapKeys();
+		protected abstract ConfigItem _mapGet(string key);
+		protected abstract void _mapSet(string key, ConfigItem value);
 	}
 }
