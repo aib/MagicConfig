@@ -53,4 +53,15 @@ namespace MagicConfig.Tests.Helpers
 		}
 		public override string ToString() => $"MyInt({val})";
 	}
+
+	public class MyIntItem: ConfigItem
+	{
+		private readonly int val;
+		public MyIntItem(int val) { this.val = val; }
+		public override bool Equals(ConfigItem other) {
+			return (other is MyIntItem otherItem) && val == otherItem.val;
+		}
+		public override void Assign(ConfigItem other) => throw new InvalidOperationException();
+		public override string ToString() => $"MyInt({val})";
+	}
 }
