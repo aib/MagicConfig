@@ -7,7 +7,7 @@ namespace MagicConfig
 {
 	// This class is the key-value map of the given type
 	// Only members of the type ConfigItem are considered
-	public class StaticMap<T>: Map<ConfigItem>, IEquatable<StaticMap<T>>
+	public class StaticMap<T>: Map<ConfigItem>, IEquatable<StaticMap<T>>, IEquatable<T>
 	{
 		public class UpdatedArgs: EventArgs {}
 		public event EventHandler<UpdatedArgs> Updated;
@@ -21,6 +21,17 @@ namespace MagicConfig
 				.Select(mi => mi as FieldInfo).Where(fi => fi != null)
 				.Where(fi => typeof(ConfigItem).IsAssignableFrom(fi.FieldType))
 				.ToDictionary(fi => fi.Name);
+		}
+
+		public bool Equals(T other)
+		{
+			StaticMap<T> otherMap;
+			try {
+				otherMap = (StaticMap<T>) (object) other;
+			} catch (InvalidCastException) {
+				otherMap = null;
+			}
+			return Equals(otherMap);
 		}
 
 		public bool Equals(StaticMap<T> other)
