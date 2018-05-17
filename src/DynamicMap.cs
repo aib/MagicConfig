@@ -62,8 +62,14 @@ namespace MagicConfig
 							}
 						} else {
 							if (!oldItem.Equals(newItem)) {
-								oldItem.Assign(newItem);
-								updated.Add((key, oldItem));
+								try {
+									oldItem.Assign(newItem);
+									updated.Add((key, oldItem));
+								} catch (InvalidTypeAssignmentException) {
+									deleted.Add((key, oldItem));
+									dictionary[key] = newItem;
+									added.Add((key, newItem));
+								}
 							}
 						}
 					} else {
