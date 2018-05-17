@@ -12,6 +12,11 @@ namespace MagicConfig
 
 		private T value;
 
+		public SingleItem(T value)
+		{
+			this.value = value;
+		}
+
 		public static implicit operator T(SingleItem<T> s)
 		{
 			return s.value;
@@ -19,7 +24,7 @@ namespace MagicConfig
 
 		public static implicit operator SingleItem<T>(T v)
 		{
-			return new SingleItem<T> { value = v };
+			return new SingleItem<T>(v);
 		}
 
 		public bool Equals(SingleItem<T> other)
