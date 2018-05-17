@@ -25,7 +25,7 @@ namespace MagicConfig.Tests.Helpers
 		public override void Assign(ConfigItem other) {}
 	}
 
-	public class MyComposite: StaticMap<MyComposite>
+	public class MyComposite: StaticMap<MyComposite>, IKeyedItem
 	{
 		public SingleItem<int> si;
 		public SingleItem<string> ss1;
@@ -42,6 +42,8 @@ namespace MagicConfig.Tests.Helpers
 
 		public int ignored_int;
 		public string ignored_string;
+
+		public string GetKeyedItemKey() => ss1;
 	}
 
 	public class MyInt: IEquatable<MyInt>
@@ -63,5 +65,29 @@ namespace MagicConfig.Tests.Helpers
 		}
 		public override void Assign(ConfigItem other) => throw new InvalidOperationException();
 		public override string ToString() => $"MyInt({val})";
+	}
+
+	public class MyKeyedInt: SingleItem<int>, IKeyedItem, IEquatable<MyKeyedInt>
+	{
+		private readonly string key;
+		public MyKeyedInt(string key, int val) :base(val) { this.key = key; }
+		public MyKeyedInt(int val) :this("NOKEY", val) {}
+		public string GetKeyedItemKey() => key;
+		public bool Equals(MyKeyedInt other) {
+			return !object.ReferenceEquals(other, null) && (int) this == (int) other;
+		}
+		public override string ToString() => $"MyKeyedInt({key}: {(int)this})";
+	}
+
+	public class MyKeyedFalseEquatableInt: MyKeyedInt
+	{
+		public MyKeyedFalseEquatableInt(string key, int val) :base(key, val) {}
+		public override bool Equals(ConfigItem other) => false;
+	}
+
+	public class MyKeyedTrueEquatableInt:  MyKeyedInt
+	{
+		public MyKeyedTrueEquatableInt(string key, int val) :base(key, val) {}
+		public override bool Equals(ConfigItem other) => true;
 	}
 }
