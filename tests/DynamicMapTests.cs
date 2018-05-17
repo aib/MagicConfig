@@ -52,6 +52,13 @@ namespace MagicConfig.Tests
 			}
 
 			{
+				DynamicMap<SingleItem<string>> dm1 = new DynamicMap<SingleItem<string>> { {"name", "foo"}, {"number", "42"} };
+				DynamicMap<SingleItem<string>> dm2 = new DynamicMap<SingleItem<string>> { {"foo",  null},  {"bar",    null} };
+				Assert.NotEqual(dm1, dm2);
+				Assert.False(dm1.Equals(dm2));
+			}
+
+			{
 				DynamicMap<ConfigItem> dm = new DynamicMap<ConfigItem> { {"name", (SingleItem<string>) "foo"}, {"number", (SingleItem<int>) 42} };
 				Assert.False(dm.Equals(null));
 				Assert.False(dm.Equals((DynamicMap<ConfigItem>) null));
