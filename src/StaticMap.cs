@@ -59,7 +59,7 @@ namespace MagicConfig
 						if (object.ReferenceEquals(newItem, null)) {
 							continue;
 						} else {
-							_mapSet(key, newItem);
+							fields[key].SetValue(this, newItem);
 						}
 					} else {
 						if (!oldItem.Equals(newItem)) {
@@ -76,7 +76,5 @@ namespace MagicConfig
 
 		protected override IEnumerable<string> _mapKeys() => fields.Keys;
 		protected override ConfigItem _mapGet(string key) => (ConfigItem) fields[key].GetValue(this);
-		protected override void _mapSet(string key, ConfigItem value) => fields[key].SetValue(this, value);
-		protected override void _mapDel(string key) => throw new InvalidOperationException();
 	}
 }

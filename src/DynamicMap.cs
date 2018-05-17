@@ -44,7 +44,7 @@ namespace MagicConfig
 				foreach (var key in _mapKeys().ToList()) {
 					if (!otherMap._mapKeys().Contains(key)) {
 						deleted.Add((key, _mapGet(key)));
-						_mapDel(key);
+						dictionary.Remove(key);
 					}
 				}
 
@@ -57,7 +57,7 @@ namespace MagicConfig
 							if (object.ReferenceEquals(newItem, null)) {
 								continue;
 							} else {
-								_mapSet(key, newItem);
+								dictionary[key] = newItem;
 							}
 						} else {
 							if (!oldItem.Equals(newItem)) {
@@ -66,7 +66,7 @@ namespace MagicConfig
 							}
 						}
 					} else {
-						_mapSet(key, newItem);
+						dictionary[key] = newItem;
 						added.Add((key, newItem));
 					}
 				}
@@ -81,8 +81,6 @@ namespace MagicConfig
 
 		protected override IEnumerable<string> _mapKeys() => dictionary.Keys;
 		protected override T _mapGet(string key) => dictionary[key];
-		protected override void _mapSet(string key, T value) => dictionary[key] = value;
-		protected override void _mapDel(string key) => dictionary.Remove(key);
 
 		public void Add(string key, T value) => dictionary.Add(key, value);
 		public bool ContainsKey(string key) => dictionary.ContainsKey(key);
