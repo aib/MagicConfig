@@ -70,11 +70,13 @@ namespace MagicConfig
 			}
 		}
 
+		// IList<T>
 		public int IndexOf(T item) => list.IndexOf(item);
 		public void Insert(int index, T item) => list.Insert(index, item);
 		public void RemoveAt(int index) => list.RemoveAt(index);
 		public T this[int index] { get => list[index]; set => list[index] = value; }
 
+		// ICollection<T>
 		public void Add(T item) => list.Add(item);
 		public void Clear() => list.Clear();
 		public bool Contains(T item) => list.Contains(item);
@@ -83,7 +85,10 @@ namespace MagicConfig
 		public int Count => list.Count;
 		public bool IsReadOnly => false;
 
+		// IEnumerable<T>
 		public IEnumerator<T> GetEnumerator() => list.GetEnumerator();
+
+		// IEnumerable
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}
 }
