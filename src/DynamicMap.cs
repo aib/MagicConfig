@@ -18,7 +18,7 @@ namespace MagicConfig
 		public event EventHandler<AddedArgs>   Added;
 		public event EventHandler<UpdatedArgs> Updated;
 
-		private readonly Dictionary<string, T> dictionary = new Dictionary<string, T>();
+		protected readonly Dictionary<string, T> dictionary = new Dictionary<string, T>();
 
 		public bool Equals(DynamicMap<T> other)
 		{
