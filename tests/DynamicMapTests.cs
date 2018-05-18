@@ -114,8 +114,9 @@ namespace MagicConfig.Tests
 			SingleItem<int> three = 3;
 			SingleItem<int> four = 4;
 			SingleItem<int> five = 5;
-			DynamicMap<SingleItem<int>> dm  = new DynamicMap<SingleItem<int>> { {"a", three},  {"b", four} };
-			DynamicMap<SingleItem<int>> dm2 = new DynamicMap<SingleItem<int>> { {"b", 42},     {"c", five} };
+			SingleItem<int> n2 = 6;
+			DynamicMap<SingleItem<int>> dm  = new DynamicMap<SingleItem<int>> { {"a", three}, {"b", four}, {"n1", null}, {"n2", null} };
+			DynamicMap<SingleItem<int>> dm2 = new DynamicMap<SingleItem<int>> { {"b", 42},    {"c", five}, {"n1", null}, {"n2", n2}   };
 
 			bool threeDeleted = false;
 			bool othersDeleted = false;
@@ -127,10 +128,12 @@ namespace MagicConfig.Tests
 			dm.Deleted += deleteHandler;
 
 			bool fiveAdded = false;
+			bool n2Added = false;
 			bool othersAdded = false;
 			void addHandler(object sender, DynamicMap<SingleItem<int>>.AddedArgs args) {
 				Assert.Same(dm, sender);
 				if      (args.Key == "c"  && object.ReferenceEquals(args.NewItem, five)) { Assert.False(fiveAdded); fiveAdded = true; }
+				else if (args.Key == "n2" && object.ReferenceEquals(args.NewItem, n2))   { Assert.False(n2Added);   n2Added   = true; }
 				else othersAdded = true;
 			}
 			dm.Added += addHandler;
@@ -157,6 +160,7 @@ namespace MagicConfig.Tests
 			Assert.False(othersDeleted);
 
 			Assert.True(fiveAdded);
+			Assert.True(n2Added);
 			Assert.False(othersAdded);
 
 			Assert.True(fourUpdated);
