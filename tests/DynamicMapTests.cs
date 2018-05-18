@@ -121,9 +121,7 @@ namespace MagicConfig.Tests
 			bool othersDeleted = false;
 			void deleteHandler(object sender, DynamicMap<SingleItem<int>>.DeletedArgs args) {
 				Assert.Same(dm, sender);
-				Assert.False(threeDeleted);
-				Assert.False(othersDeleted);
-				if (args.Key == "a" && object.ReferenceEquals(args.OldItem, three)) threeDeleted = true;
+				if (args.Key == "a" && object.ReferenceEquals(args.OldItem, three)) { Assert.False(threeDeleted); threeDeleted = true; }
 				else othersDeleted = true;
 			}
 			dm.Deleted += deleteHandler;
@@ -132,9 +130,7 @@ namespace MagicConfig.Tests
 			bool othersAdded = false;
 			void addHandler(object sender, DynamicMap<SingleItem<int>>.AddedArgs args) {
 				Assert.Same(dm, sender);
-				Assert.False(fiveAdded);
-				Assert.False(othersAdded);
-				if (args.Key == "c" && object.ReferenceEquals(args.NewItem, five)) fiveAdded = true;
+				if      (args.Key == "c"  && object.ReferenceEquals(args.NewItem, five)) { Assert.False(fiveAdded); fiveAdded = true; }
 				else othersAdded = true;
 			}
 			dm.Added += addHandler;
@@ -143,9 +139,7 @@ namespace MagicConfig.Tests
 			bool othersUpdated = false;
 			void updateHandler(object sender, DynamicMap<SingleItem<int>>.UpdatedArgs args) {
 				Assert.Same(dm, sender);
-				Assert.False(fourUpdated);
-				Assert.False(othersUpdated);
-				if (args.Key == "b" && object.ReferenceEquals(args.Item, four)) fourUpdated = true;
+				if (args.Key == "b" && object.ReferenceEquals(args.Item, four)) { Assert.False(fourUpdated); fourUpdated = true; }
 				else othersUpdated = true;
 			}
 			dm.Updated += updateHandler;
@@ -167,6 +161,7 @@ namespace MagicConfig.Tests
 
 			Assert.True(fourUpdated);
 			Assert.False(othersUpdated);
+
 			Assert.True(fourObjectUpdated);
 
 			Assert.Equal(four, dm["b"]);
