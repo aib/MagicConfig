@@ -146,7 +146,7 @@ namespace MagicConfig.Tests
 				Assert.False(fourUpdated);
 				Assert.False(othersUpdated);
 				if (args.Key == "b" && object.ReferenceEquals(args.Item, four)) fourUpdated = true;
-				else othersUpdated = false;
+				else othersUpdated = true;
 			}
 			dm.Updated += updateHandler;
 
