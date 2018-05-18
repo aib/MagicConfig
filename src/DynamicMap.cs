@@ -59,6 +59,7 @@ namespace MagicConfig
 								continue;
 							} else {
 								dictionary[key] = newItem;
+								added.Add((key, newItem));
 							}
 						} else {
 							if (!oldItem.Equals(newItem)) {
