@@ -9,12 +9,12 @@ namespace MagicConfig
 	public class ItemList<T>: ConfigItem, IList<T>, IEquatable<ItemList<T>>
 		where T: IEquatable<T>
 	{
-		public class DeletedArgs: EventArgs { public T OldItem; }
-		public class AddedArgs:   EventArgs { public T NewItem; }
-		public class UpdatedArgs: EventArgs { public IList<T> NewList; }
-		public event EventHandler<DeletedArgs> Deleted;
-		public event EventHandler<AddedArgs>   Added;
-		public event EventHandler<UpdatedArgs> Updated;
+		public class ItemDeletedArgs: EventArgs { public T OldItem; }
+		public class ItemAddedArgs:   EventArgs { public T NewItem; }
+		public class UpdatedArgs:     EventArgs { public IList<T> NewList; }
+		public event EventHandler<ItemDeletedArgs> ItemDeleted;
+		public event EventHandler<ItemAddedArgs>   ItemAdded;
+		public event EventHandler<UpdatedArgs>     Updated;
 
 		private List<T> list = new List<T>();
 
@@ -61,8 +61,8 @@ namespace MagicConfig
 					}
 				}
 
-				list.ForEach(i => Deleted?.Invoke(this, new DeletedArgs { OldItem = i }));
-				added.ForEach(i => Added?.Invoke(this, new AddedArgs { NewItem = i }));
+				list.ForEach(i => ItemDeleted?.Invoke(this, new ItemDeletedArgs { OldItem = i }));
+				added.ForEach(i => ItemAdded?.Invoke(this, new ItemAddedArgs { NewItem = i }));
 				list = newList;
 				Updated?.Invoke(this, new UpdatedArgs { NewList = newList });
 			} else {
