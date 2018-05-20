@@ -9,8 +9,10 @@ namespace MagicConfig
 	// Only members of the type ConfigItem are considered
 	public class StaticMap<T>: Map<ConfigItem>, IEquatable<StaticMap<T>>, IEquatable<T>
 	{
-		public class UpdatedArgs: EventArgs {}
-		public event EventHandler<UpdatedArgs> Updated;
+		public class ItemUpdatedArgs: EventArgs { public string Key; public ConfigItem Item; }
+		public class UpdatedArgs:     EventArgs {}
+		public event EventHandler<ItemUpdatedArgs> ItemUpdated;
+		public event EventHandler<UpdatedArgs>     Updated;
 
 		private readonly Dictionary<string, FieldInfo> fields;
 
@@ -51,6 +53,8 @@ namespace MagicConfig
 		public override void Assign(ConfigItem other)
 		{
 			if (other is StaticMap<T> otherMap) {
+				var updated = new List<(string, ConfigItem)>();
+
 				foreach (var key in _mapKeys()) {
 					var oldItem = _mapGet(key);
 					var newItem = otherMap._mapGet(key);
@@ -60,14 +64,17 @@ namespace MagicConfig
 							continue;
 						} else {
 							fields[key].SetValue(this, newItem);
+							updated.Add((key, newItem));
 						}
 					} else {
 						if (!oldItem.Equals(newItem)) {
 							oldItem.Assign(newItem);
+							updated.Add((key, oldItem));
 						}
 					}
 				}
 
+				updated.ForEach(kv => ItemUpdated?.Invoke(this, new ItemUpdatedArgs { Key = kv.Item1, Item = kv.Item2 }));
 				Updated?.Invoke(this, new UpdatedArgs());
 			} else {
 				throw new InvalidTypeAssignmentException(this, other);
