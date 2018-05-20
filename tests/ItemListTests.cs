@@ -211,25 +211,25 @@ namespace MagicConfig.Tests
 
 			bool threeDeleted = false;
 			bool othersDeleted = false;
-			void deleteHandler(object sender, ItemList<SingleItem<int>>.DeletedArgs args) {
+			void deleteHandler(object sender, ItemList<SingleItem<int>>.ItemDeletedArgs args) {
 				Assert.Same(il, sender);
 				Assert.False(threeDeleted);
 				Assert.False(othersDeleted);
 				if (args.OldItem == 3) threeDeleted = true;
 				else othersDeleted = true;
 			}
-			il.Deleted += deleteHandler;
+			il.ItemDeleted += deleteHandler;
 
 			bool sixAdded = false;
 			bool othersAdded = false;
-			void addHandler(object sender, ItemList<SingleItem<int>>.AddedArgs args) {
+			void addHandler(object sender, ItemList<SingleItem<int>>.ItemAddedArgs args) {
 				Assert.Same(il, sender);
 				Assert.False(sixAdded);
 				Assert.False(othersAdded);
 				if (args.NewItem == 6) sixAdded = true;
 				else othersAdded = true;
 			}
-			il.Added += addHandler;
+			il.ItemAdded += addHandler;
 
 			bool updateCalled = false;
 			void updateHandler(object sender, ItemList<SingleItem<int>>.UpdatedArgs args) {
@@ -259,12 +259,12 @@ namespace MagicConfig.Tests
 			ItemList<string> il2 = new ItemList<string> { "bar", "foo" };
 
 			bool deleteCalled = false;
-			void deleteHandler(object sender, ItemList<string>.DeletedArgs args) { deleteCalled = true; }
-			il.Deleted += deleteHandler;
+			void deleteHandler(object sender, ItemList<string>.ItemDeletedArgs args) { deleteCalled = true; }
+			il.ItemDeleted += deleteHandler;
 
 			bool addCalled = false;
-			void addHandler(object sender, ItemList<string>.AddedArgs args) { addCalled = true; }
-			il.Added += addHandler;
+			void addHandler(object sender, ItemList<string>.ItemAddedArgs args) { addCalled = true; }
+			il.ItemAdded += addHandler;
 
 			bool updateCalled = false;
 			void updateHandler(object sender, ItemList<string>.UpdatedArgs args) {
@@ -288,10 +288,10 @@ namespace MagicConfig.Tests
 			void increment<T>(Dictionary<T, int> dict, T key) { dict.TryGetValue(key, out int value); dict[key] = value + 1; }
 			var adds = new Dictionary<int, int>();
 			var dels = new Dictionary<int, int>();
-			void deleteHandler(object sender, ItemList<int>.DeletedArgs args) { increment(dels, args.OldItem); }
-			void addHandler   (object sender, ItemList<int>.AddedArgs args)   { increment(adds, args.NewItem); }
-			il.Deleted += deleteHandler;
-			il.Added   += addHandler;
+			void deleteHandler(object sender, ItemList<int>.ItemDeletedArgs args) { increment(dels, args.OldItem); }
+			void addHandler   (object sender, ItemList<int>.ItemAddedArgs args)   { increment(adds, args.NewItem); }
+			il.ItemDeleted += deleteHandler;
+			il.ItemAdded   += addHandler;
 
 			bool updateCalled = false;
 			void updateHandler(object sender, ItemList<int>.UpdatedArgs args) {
