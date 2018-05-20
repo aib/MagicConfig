@@ -89,7 +89,7 @@ namespace MagicConfig.Tests
 
 			{
 				KeyedItemList<MyKeyedInt> kil1 = new KeyedItemList<MyKeyedInt> { new MyKeyedTrueEquatableInt("e", 42) };
-				KeyedItemList<MyKeyedInt> kil2 = new KeyedItemList<MyKeyedInt> { new MyKeyedTrueEquatableInt("e", 42) };
+				KeyedItemList<MyKeyedInt> kil2 = new KeyedItemList<MyKeyedInt> { new MyKeyedTrueEquatableInt("e", 43) };
 				Assert.True(kil1.Equals(kil2));
 			}
 		}
