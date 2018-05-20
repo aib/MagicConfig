@@ -21,15 +21,15 @@ namespace MagicConfig.Tests
 
 			{
 				var i = new List<int> { 3, 4, 5 };
-				ItemList<int> il = i;
-				List<int> o = il;
+				ItemList<int> il = new ItemList<int>(i);
+				IList<int> o = il;
 				Assert.Equal(i, o);
 			}
 
 			{
 				var i = new List<SingleItem<int>> { 3, 4, 5 };
-				ItemList<SingleItem<int>> il = i;
-				List<SingleItem<int>> o = il;
+				ItemList<SingleItem<int>> il = new ItemList<SingleItem<int>>(i);
+				IList<SingleItem<int>> o = il;
 				Assert.Equal(i, o);
 			}
 
