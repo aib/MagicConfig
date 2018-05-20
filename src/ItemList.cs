@@ -28,16 +28,6 @@ namespace MagicConfig
 			list = new List<T>(e);
 		}
 
-		public static implicit operator List<T>(ItemList<T> il)
-		{
-			return il.list;
-		}
-
-		public static implicit operator ItemList<T>(List<T> l)
-		{
-			return new ItemList<T> { list = l };
-		}
-
 		public bool Equals(ItemList<T> other)
 		{
 			if (object.ReferenceEquals(other, null)) return false;
