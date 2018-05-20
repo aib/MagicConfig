@@ -120,32 +120,32 @@ namespace MagicConfig.Tests
 
 			bool threeDeleted = false;
 			bool othersDeleted = false;
-			void deleteHandler(object sender, DynamicMap<SingleItem<int>>.DeletedArgs args) {
+			void deleteHandler(object sender, DynamicMap<SingleItem<int>>.ItemDeletedArgs args) {
 				Assert.Same(dm, sender);
 				if (args.Key == "a" && object.ReferenceEquals(args.OldItem, three)) { Assert.False(threeDeleted); threeDeleted = true; }
 				else othersDeleted = true;
 			}
-			dm.Deleted += deleteHandler;
+			dm.ItemDeleted += deleteHandler;
 
 			bool fiveAdded = false;
 			bool n2Added = false;
 			bool othersAdded = false;
-			void addHandler(object sender, DynamicMap<SingleItem<int>>.AddedArgs args) {
+			void addHandler(object sender, DynamicMap<SingleItem<int>>.ItemAddedArgs args) {
 				Assert.Same(dm, sender);
 				if      (args.Key == "c"  && object.ReferenceEquals(args.NewItem, five)) { Assert.False(fiveAdded); fiveAdded = true; }
 				else if (args.Key == "n2" && object.ReferenceEquals(args.NewItem, n2))   { Assert.False(n2Added);   n2Added   = true; }
 				else othersAdded = true;
 			}
-			dm.Added += addHandler;
+			dm.ItemAdded += addHandler;
 
 			bool fourUpdated = false;
 			bool othersUpdated = false;
-			void updateHandler(object sender, DynamicMap<SingleItem<int>>.UpdatedArgs args) {
+			void updateHandler(object sender, DynamicMap<SingleItem<int>>.ItemUpdatedArgs args) {
 				Assert.Same(dm, sender);
 				if (args.Key == "b" && object.ReferenceEquals(args.Item, four)) { Assert.False(fourUpdated); fourUpdated = true; }
 				else othersUpdated = true;
 			}
-			dm.Updated += updateHandler;
+			dm.ItemUpdated += updateHandler;
 
 			bool fourObjectUpdated = false;
 			void fourUpdateHandler(object sender, SingleItem<int>.UpdatedArgs args) {
@@ -181,27 +181,27 @@ namespace MagicConfig.Tests
 
 			bool threeDeleted = false;
 			bool othersDeleted = false;
-			void deleteHandler(object sender, DynamicMap<ConfigItem>.DeletedArgs args) {
+			void deleteHandler(object sender, DynamicMap<ConfigItem>.ItemDeletedArgs args) {
 				Assert.Same(dm, sender);
 				Assert.False(threeDeleted);
 				Assert.False(othersDeleted);
 				if (args.Key == "a" && args.OldItem is SingleItem<int> oi && (int) oi == 3) threeDeleted = true;
 				else othersDeleted = true;
 			}
-			dm.Deleted += deleteHandler;
+			dm.ItemDeleted += deleteHandler;
 
 			bool threeAdded = false;
 			bool othersAdded = false;
-			void addHandler(object sender, DynamicMap<ConfigItem>.AddedArgs args) {
+			void addHandler(object sender, DynamicMap<ConfigItem>.ItemAddedArgs args) {
 				Assert.Same(dm, sender);
 				Assert.False(threeAdded);
 				Assert.False(othersAdded);
 				if (args.Key == "a" && args.NewItem is SingleItem<string> os && (string) os == "three") threeAdded = true;
 				else othersAdded = true;
 			}
-			dm.Added += addHandler;
+			dm.ItemAdded += addHandler;
 
-			dm.Updated += (sender, args) => Assert.False(true);
+			dm.ItemUpdated += (sender, args) => Assert.False(true);
 
 			dm.Assign(dm2);
 

@@ -128,36 +128,36 @@ namespace MagicConfig.Tests
 
 			bool threeDeleted = false;
 			bool othersDeleted = false;
-			void deleteHandler(object sender, KeyedItemList<MyKeyedInt>.DeletedArgs args) {
+			void deleteHandler(object sender, KeyedItemList<MyKeyedInt>.ItemDeletedArgs args) {
 				Assert.Same(kil, sender);
 				Assert.False(threeDeleted);
 				Assert.False(othersDeleted);
 				if (args.Key == "a" && object.ReferenceEquals(args.OldItem, three)) threeDeleted = true;
 				else othersDeleted = true;
 			}
-			kil.Deleted += deleteHandler;
+			kil.ItemDeleted += deleteHandler;
 
 			bool fiveAdded = false;
 			bool othersAdded = false;
-			void addHandler(object sender, KeyedItemList<MyKeyedInt>.AddedArgs args) {
+			void addHandler(object sender, KeyedItemList<MyKeyedInt>.ItemAddedArgs args) {
 				Assert.Same(kil, sender);
 				Assert.False(fiveAdded);
 				Assert.False(othersAdded);
 				if (args.Key == "c" && object.ReferenceEquals(args.NewItem, five)) fiveAdded = true;
 				else othersAdded = true;
 			}
-			kil.Added += addHandler;
+			kil.ItemAdded += addHandler;
 
 			bool fourUpdated = false;
 			bool othersUpdated = false;
-			void updateHandler(object sender, KeyedItemList<MyKeyedInt>.UpdatedArgs args) {
+			void updateHandler(object sender, KeyedItemList<MyKeyedInt>.ItemUpdatedArgs args) {
 				Assert.Same(kil, sender);
 				Assert.False(fourUpdated);
 				Assert.False(othersUpdated);
 				if (args.Key == "b" && object.ReferenceEquals(args.Item, four)) fourUpdated = true;
 				else othersUpdated = true;
 			}
-			kil.Updated += updateHandler;
+			kil.ItemUpdated += updateHandler;
 
 			bool fourObjectUpdated = false;
 			void fourUpdateHandler(object sender, MyKeyedInt.UpdatedArgs args) {
