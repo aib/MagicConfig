@@ -16,7 +16,17 @@ namespace MagicConfig
 		public event EventHandler<ItemAddedArgs>   ItemAdded;
 		public event EventHandler<UpdatedArgs>     Updated;
 
-		private List<T> list = new List<T>();
+		private List<T> list;
+
+		public ItemList()
+		{
+			list = new List<T>();
+		}
+
+		public ItemList(IEnumerable<T> e)
+		{
+			list = new List<T>(e);
+		}
 
 		public static implicit operator List<T>(ItemList<T> il)
 		{
