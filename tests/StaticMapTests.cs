@@ -1,6 +1,7 @@
 using MagicConfig;
 using MagicConfig.Tests.Helpers;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace MagicConfig.Tests
@@ -90,6 +91,9 @@ namespace MagicConfig.Tests
 			}
 			sm.Updated += updateHandler;
 
+			var itemUpdates = new Dictionary<string, object>();
+			sm.ItemUpdated += (sender, args) => { Assert.Same(sm, sender); itemUpdates[args.Key] = args.Item; };
+
 			bool siUpdateCalled = false;
 			void siUpdateHandler(object sender, SingleItem<string>.UpdatedArgs args) {
 				Assert.False(siUpdateCalled);
@@ -104,6 +108,18 @@ namespace MagicConfig.Tests
 
 			Assert.True(updateCalled);
 			Assert.True(siUpdateCalled);
+
+			Assert.True(itemUpdates.ContainsKey("si"));
+			Assert.Equal((SingleItem<int>) 42, itemUpdates["si"]);
+
+			Assert.True(itemUpdates.ContainsKey("ss1"));
+			Assert.Equal((SingleItem<string>) "foo", itemUpdates["ss1"]);
+
+			Assert.True(itemUpdates.ContainsKey("ss2"));
+			Assert.Equal((SingleItem<string>) "bar", itemUpdates["ss2"]);
+
+			Assert.True(itemUpdates.ContainsKey("nested"));
+			Assert.Equal(new MyComposite.MyNested{x=11, y=20, s="barz"}, itemUpdates["nested"]);
 		}
 	}
 }
