@@ -11,12 +11,14 @@ namespace MagicConfig
 	public class DynamicMap<T>: Map<T>, IDictionary<string, T>, IEquatable<DynamicMap<T>>
 		where T: ConfigItem
 	{
-		public class DeletedArgs: EventArgs { public string Key; public T OldItem; }
-		public class AddedArgs:   EventArgs { public string Key; public T NewItem; }
-		public class UpdatedArgs: EventArgs { public string Key; public T Item;    }
-		public event EventHandler<DeletedArgs> Deleted;
-		public event EventHandler<AddedArgs>   Added;
-		public event EventHandler<UpdatedArgs> Updated;
+		public class ItemDeletedArgs: EventArgs { public string Key; public T OldItem; }
+		public class ItemAddedArgs:   EventArgs { public string Key; public T NewItem; }
+		public class ItemUpdatedArgs: EventArgs { public string Key; public T Item;    }
+		public class UpdatedArgs:     EventArgs {}
+		public event EventHandler<ItemDeletedArgs> ItemDeleted;
+		public event EventHandler<ItemAddedArgs>   ItemAdded;
+		public event EventHandler<ItemUpdatedArgs> ItemUpdated;
+		public event EventHandler<UpdatedArgs>     Updated;
 
 		protected readonly Dictionary<string, T> dictionary = new Dictionary<string, T>();
 
@@ -79,9 +81,10 @@ namespace MagicConfig
 					}
 				}
 
-				deleted.ForEach(kv => Deleted?.Invoke(this, new DeletedArgs { Key = kv.Item1, OldItem = kv.Item2 }));
-				added  .ForEach(kv => Added  ?.Invoke(this, new AddedArgs   { Key = kv.Item1, NewItem = kv.Item2 }));
-				updated.ForEach(kv => Updated?.Invoke(this, new UpdatedArgs { Key = kv.Item1,    Item = kv.Item2 }));
+				deleted.ForEach(kv => ItemDeleted?.Invoke(this, new ItemDeletedArgs { Key = kv.Item1, OldItem = kv.Item2 }));
+				added  .ForEach(kv => ItemAdded  ?.Invoke(this, new ItemAddedArgs   { Key = kv.Item1, NewItem = kv.Item2 }));
+				updated.ForEach(kv => ItemUpdated?.Invoke(this, new ItemUpdatedArgs { Key = kv.Item1,    Item = kv.Item2 }));
+				Updated?.Invoke(this, new UpdatedArgs());
 			} else {
 				throw new InvalidTypeAssignmentException(this, other);
 			}
