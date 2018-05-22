@@ -35,6 +35,32 @@ namespace MagicConfig.Tests
 		public void KeyedItemListEqualsWorks()
 		{
 			{
+				KeyedItemList<MyKeyedInt> kil1 = new KeyedItemList<MyKeyedInt> {};
+				KeyedItemList<MyKeyedInt> kil2 = new KeyedItemList<MyKeyedInt> { new MyKeyedInt("a", 1) };
+
+				Assert.NotEqual(kil1, kil2);
+				Assert.NotEqual(kil2, kil1);
+				Assert.False(kil1.Equals(kil2));
+				Assert.False(kil2.Equals(kil1));
+			}
+
+			{
+				KeyedItemList<MyKeyedInt> kil1 = new KeyedItemList<MyKeyedInt> { new MyKeyedInt("a", 1), new MyKeyedInt("b", 2) };
+				KeyedItemList<MyKeyedInt> kil2 = new KeyedItemList<MyKeyedInt> { new MyKeyedInt("a", 1) };
+
+				Assert.NotEqual(kil1, kil2);
+				Assert.False(kil1.Equals(kil2));
+			}
+
+			{
+				KeyedItemList<MyKeyedInt> kil1 = new KeyedItemList<MyKeyedInt> { new MyKeyedInt("a", 1), new MyKeyedInt("b", 2) };
+				KeyedItemList<MyKeyedInt> kil2 = new KeyedItemList<MyKeyedInt> { new MyKeyedInt("a", 1), new MyKeyedInt("b", 2), new MyKeyedInt("c", 3) };
+
+				Assert.NotEqual(kil1, kil2);
+				Assert.False(kil1.Equals(kil2));
+			}
+
+			{
 				MyComposite sm1 = new MyComposite { si = 42, ss1 = "foo", ss2 = "key is foo", nested = null, ci = null };
 				MyComposite sm2 = new MyComposite { si = 43, ss1 = "bar", ss2 = "key is bar", nested = new MyComposite.MyNested { x = 10, y = 20, s = "bar" }, ci = null };
 
