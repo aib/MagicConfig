@@ -12,6 +12,15 @@ namespace MagicConfig
 	public class KeyedItemList<T>: DynamicMap<T>, ICollection<T>, IEquatable<KeyedItemList<T>>
 		where T: ConfigItem, IKeyedItem
 	{
+		public KeyedItemList() {}
+
+		public KeyedItemList(IEnumerable<T> enumerable)
+		{
+			foreach (var item in enumerable) {
+				Add(item);
+			}
+		}
+
 		public bool Equals(KeyedItemList<T> other)
 		{
 			return !object.ReferenceEquals(other, null) && ((DynamicMap<T>) this).Equals(other);
