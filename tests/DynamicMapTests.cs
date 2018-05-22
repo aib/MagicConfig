@@ -37,6 +37,33 @@ namespace MagicConfig.Tests
 		public void DynamicMapEqualsWorks()
 		{
 			{
+				DynamicMap<ConfigItem> dm1 = new DynamicMap<ConfigItem> {};
+				DynamicMap<ConfigItem> dm2 = new DynamicMap<ConfigItem> { {"number", (SingleItem<int>) 42} };
+				Assert.NotEqual(dm1, dm2);
+				Assert.NotEqual(dm2, dm1);
+				Assert.False(dm1.Equals(dm2));
+				Assert.False(dm2.Equals(dm1));
+			}
+
+			{
+				DynamicMap<ConfigItem> dm1 = new DynamicMap<ConfigItem> { {"number", null} };
+				DynamicMap<ConfigItem> dm2 = new DynamicMap<ConfigItem> { {"number", (SingleItem<int>) 42} };
+				Assert.NotEqual(dm1, dm2);
+				Assert.NotEqual(dm2, dm1);
+				Assert.False(dm1.Equals(dm2));
+				Assert.False(dm2.Equals(dm1));
+			}
+
+			{
+				DynamicMap<ConfigItem> dm1 = new DynamicMap<ConfigItem> { {"name", null} };
+				DynamicMap<ConfigItem> dm2 = new DynamicMap<ConfigItem> { {"name", null} };
+				Assert.Equal(dm1, dm2);
+				Assert.Equal(dm2, dm1);
+				Assert.True(dm1.Equals(dm2));
+				Assert.True(dm2.Equals(dm1));
+			}
+
+			{
 				MyComposite sm = new MyComposite { si = 42, ss1 = "foo", ss2 = null, nested = new MyComposite.MyNested { x = 10, y = 20, s = "bar" }, ci = null };
 				DynamicMap<ConfigItem> dm1 = new DynamicMap<ConfigItem> { {"name",   (SingleItem<string>) "foo"}, {"number", (SingleItem<int>) 42}, {"smap",                      sm}    };
 				DynamicMap<ConfigItem> dm2 = new DynamicMap<ConfigItem> { {"number", (SingleItem<int>)    42},    {"smap",                     sm}, {"name", (SingleItem<string>) "foo"} };
