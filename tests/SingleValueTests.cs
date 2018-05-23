@@ -12,12 +12,15 @@ namespace MagicConfig.Tests
 		{
 			{
 				SingleValue<MyBoolean> sv = MyBoolean.FILE_NOT_FOUND;
+				Assert.Equal(MyBoolean.FILE_NOT_FOUND, sv.Value);
 				Assert.Equal<MyBoolean>(MyBoolean.FILE_NOT_FOUND, sv);
+				Assert.Equal(2, (int) sv.Value);
 				Assert.Equal(2, (int) (MyBoolean) sv);
 			}
 
 			{
 				SingleValue<int> sv = 42;
+				Assert.Equal(42, sv.Value);
 				Assert.Equal(42, (int) sv);
 			}
 		}

@@ -12,12 +12,14 @@ namespace MagicConfig.Tests
 		{
 			{
 				SingleItem<int> si = 42;
+				Assert.Equal(42, si.Value);
 				Assert.Equal(42, (int) si);
 			}
 
 			{
 				int i = 42;
 				SingleItem<int> si = i;
+				Assert.Equal(i, si.Value);
 				int o = si;
 				Assert.Equal(i, o);
 			}
@@ -25,6 +27,7 @@ namespace MagicConfig.Tests
 			{
 				string i = "foo";
 				SingleItem<string> si = i;
+				Assert.Equal(i, si.Value);
 				string o = si;
 				Assert.Equal(i, o);
 			}
@@ -32,6 +35,7 @@ namespace MagicConfig.Tests
 			{
 				MyFalseEquatable i = new MyFalseEquatable();
 				SingleItem<MyFalseEquatable> si = i;
+				Assert.Same(i, si.Value);
 				MyFalseEquatable o = si;
 				Assert.Same(i, o);
 			}
