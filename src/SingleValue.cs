@@ -16,7 +16,7 @@ namespace MagicConfig
 			this.value = value;
 		}
 
-		public T Item => value;
+		public T Value => value;
 
 		public static implicit operator T(SingleValue<T> s)
 		{
