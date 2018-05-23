@@ -90,4 +90,11 @@ namespace MagicConfig.Tests.Helpers
 		public MyKeyedTrueEquatableInt(string key, int val) :base(key, val) {}
 		public override bool Equals(ConfigItem other) => true;
 	}
+
+	public enum MyBoolean
+	{
+		FALSE,
+		TRUE,
+		FILE_NOT_FOUND
+	}
 }
