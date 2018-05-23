@@ -82,5 +82,23 @@ namespace MagicConfig.Tests
 			sv1.Assign(sv2);
 			Assert.True(updateCalled);
 		}
+
+		[Fact]
+		public void SingleValueSingleItemCrossAssignment()
+		{
+			{
+				SingleItem<int> si = 2;
+				SingleValue<int> sv = 42;
+				si.Assign(sv);
+				Assert.Equal(42, (int) si);
+			}
+
+			{
+				SingleValue<int> sv = 2;
+				SingleItem<int> si = 42;
+				sv.Assign(si);
+				Assert.Equal(42, (int) sv);
+			}
+		}
 	}
 }
