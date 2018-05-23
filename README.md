@@ -24,6 +24,9 @@ If a [to-be] updated value's `Assign` throws `InvalidTypeAssignmentException`, t
 ### KeyedItemList
 `KeyedItemList<T>` is a hack around configurations where a map was intended but a list was used. It is a list of items of type `T`, which should be derived from `ConfigItem` and implement `IKeyedItem`. `KeyedItemList` is very similar to `DynamicMap` (it is, in fact, a direct subclass) but uses an item's `GetKeyedItemKey` method to determine its key. Duplicate and dynamic keys are handled poorly.
 
+### SingleValue
+`SingleValue<T>` is the poor man's `SingleItem`. It has no constraints on `T` and uses `object.Equals` for comparison. You are better off using `SingleItem` instead of `SingleValue` in mosts cases -- in all cases where `T` can be made `IEquatable`, probably. `SingleValue` was created for those cases when it is impossible, such as when wrapping an enum.
+
 ## Examples ##
 
 For usage examples please see the `UseCase#.cs` files under `tests/`.
