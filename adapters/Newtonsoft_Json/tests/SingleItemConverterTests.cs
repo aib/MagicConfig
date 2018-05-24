@@ -15,8 +15,20 @@ namespace MagicConfig.Adapters.Newtonsoft_Json.Test
 		public void TestSingleItemConverter()
 		{
 			var converters = new JsonConverter[] { new SingleItemConverter<int>() };
-			var obj = JsonConvert.DeserializeObject<TestClass>(TestClass.JSON, converters);
-			Assert.Equal(42, (int) obj.si_int);
+
+			{
+				var obj = JsonConvert.DeserializeObject<TestClass>(TestClass.JSON, converters);
+				Assert.Equal(42, (int) obj.si_int);
+			}
+
+			{
+				var obj1 = new TestClass { si_int = 42 };
+				string json = JsonConvert.SerializeObject(obj1, converters);
+				var obj2 = JsonConvert.DeserializeObject<TestClass>(json, converters);
+
+				Assert.True(obj1.Equals(obj2));
+				Assert.True(obj2.Equals(obj1));
+			}
 		}
 	}
 }
