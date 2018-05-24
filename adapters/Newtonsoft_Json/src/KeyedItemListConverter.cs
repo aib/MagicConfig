@@ -9,7 +9,7 @@ namespace MagicConfig.Adapters.Newtonsoft_Json
 	{
 		public override void WriteJson(JsonWriter writer, KeyedItemList<T> value, JsonSerializer serializer)
 		{
-			serializer.Serialize(writer, (ICollection<T>) value);
+			serializer.Serialize(writer, new List<T>(value));
 		}
 
 		public override KeyedItemList<T> ReadJson(JsonReader reader, Type objectType, KeyedItemList<T> existingValue, bool hasExistingValue, JsonSerializer serializer)
