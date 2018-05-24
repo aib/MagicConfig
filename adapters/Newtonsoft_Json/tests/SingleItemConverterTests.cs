@@ -11,11 +11,8 @@ namespace MagicConfig.Adapters.Newtonsoft_Json.Test
 			public const string JSON = "{ \"si_int\": 42 }";
 		}
 
-		[Fact]
-		public void TestSingleItemConverter()
+		private void testConversion(JsonConverter[] converters)
 		{
-			var converters = new JsonConverter[] { new SingleItemConverter<int>() };
-
 			{
 				var obj = JsonConvert.DeserializeObject<TestClass>(TestClass.JSON, converters);
 				Assert.Equal(42, (int) obj.si_int);
@@ -29,6 +26,18 @@ namespace MagicConfig.Adapters.Newtonsoft_Json.Test
 				Assert.True(obj1.Equals(obj2));
 				Assert.True(obj2.Equals(obj1));
 			}
+		}
+
+		[Fact]
+		public void TestSingleItemConverter()
+		{
+			testConversion(new JsonConverter[] { new SingleItemConverter<int>() });
+		}
+
+		[Fact]
+		public void TestSingleItemGenericConverter()
+		{
+			testConversion(new JsonConverter[] { new SingleItemConverter() });
 		}
 	}
 }
