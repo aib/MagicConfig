@@ -18,11 +18,8 @@ namespace MagicConfig.Adapters.Newtonsoft_Json.Test
 			public const string JSON = "{ \"sv_int\": 42, \"sv_foo\": \"BAR\" }";
 		}
 
-		[Fact]
-		public void TestSingleValueConverter()
+		private void testConversion(JsonConverter[] converters)
 		{
-			var converters = new JsonConverter[] { new SingleValueConverter<int>(), new SingleValueConverter<FooEnum>() };
-
 			{
 				var obj = JsonConvert.DeserializeObject<TestClass>(TestClass.JSON, converters);
 
@@ -44,6 +41,18 @@ namespace MagicConfig.Adapters.Newtonsoft_Json.Test
 				Assert.True(obj1.Equals(obj2));
 				Assert.True(obj2.Equals(obj1));
 			}
+		}
+
+		[Fact]
+		public void TestSingleValueConverter()
+		{
+			testConversion(new JsonConverter[] { new SingleValueConverter<int>(), new SingleValueConverter<FooEnum>() });
+		}
+
+		[Fact]
+		public void TestSingleValueGenericConverter()
+		{
+			testConversion(new JsonConverter[] { new SingleValueConverter() });
 		}
 	}
 }
