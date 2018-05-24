@@ -27,10 +27,19 @@ namespace MagicConfig.Tests
 		[Fact]
 		public void StaticMapEqualsWorks()
 		{
-			MyComposite sm1 = new MyComposite { si = 42, ss1 = "foo", ss2 = null, nested = new MyComposite.MyNested { x = 10, y = 20, s = "bar" }, ci = null };
-			MyComposite sm2 = new MyComposite { si = 42, ss1 = "foo", ss2 = null, nested = new MyComposite.MyNested { x = 10, y = 20, s = "bar" }, ci = null };
-			Assert.True(sm1.Equals(sm2));
-			Assert.False(sm1.Equals(null));
+			{
+				MyComposite sm1 = new MyComposite { si = 42, ss1 = "foo", ss2 = null, nested = new MyComposite.MyNested { x = 10, y = 20, s = "bar" }, ci = null };
+				MyComposite sm2 = new MyComposite { si = 42, ss1 = "foo", ss2 = null, nested = new MyComposite.MyNested { x = 10, y = 20, s = "bar" }, ci = null };
+				Assert.True(sm1.Equals(sm2));
+				Assert.False(sm1.Equals(null));
+			}
+
+			{
+				MyComposite sm1 = new MyComposite { ss1 = null,  ss2 = "foo" };
+				MyComposite sm2 = new MyComposite { ss1 = "foo", ss2 = null  };
+				Assert.False(sm1.Equals(sm2));
+				Assert.False(sm2.Equals(sm1));
+			}
 		}
 
 		[Fact]
