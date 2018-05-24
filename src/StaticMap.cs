@@ -41,7 +41,7 @@ namespace MagicConfig
 			return !object.ReferenceEquals(other, null)
 				&& _mapKeys().All(
 					k => (object.ReferenceEquals(_mapGet(k), null) && object.ReferenceEquals(other._mapGet(k), null)) ||
-						_mapGet(k).Equals(other._mapGet(k))
+						!object.ReferenceEquals(_mapGet(k), null) && _mapGet(k).Equals(other._mapGet(k))
 				);
 		}
 
