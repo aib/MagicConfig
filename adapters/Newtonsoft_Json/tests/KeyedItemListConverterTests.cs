@@ -48,5 +48,11 @@ namespace MagicConfig.Adapters.Newtonsoft_Json.Test
 		{
 			testConversion(new JsonConverter[] { new KeyedItemListConverter<TestClass.Foo>() });
 		}
+
+		[Fact]
+		public void TestKeyedItemListGenericConverter()
+		{
+			testConversion(new JsonConverter[] { new KeyedItemListConverter() });
+		}
 	}
 }
