@@ -16,8 +16,10 @@ namespace MagicConfig
 
 		public KeyedItemList(IEnumerable<T> enumerable)
 		{
-			foreach (var item in enumerable) {
-				Add(item);
+			if (enumerable != null) {
+				foreach (var item in enumerable) {
+					Add(item);
+				}
 			}
 		}
 
