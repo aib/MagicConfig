@@ -22,16 +22,28 @@ namespace MagicConfig.Adapters.Newtonsoft_Json.Test
 		public void TestSingleValueConverter()
 		{
 			var converters = new JsonConverter[] { new SingleValueConverter<int>(), new SingleValueConverter<FooEnum>() };
-			var obj = JsonConvert.DeserializeObject<TestClass>(TestClass.JSON, converters);
 
-			Assert.Equal(42, (int) obj.sv_int);
+			{
+				var obj = JsonConvert.DeserializeObject<TestClass>(TestClass.JSON, converters);
 
-			Assert.Equal<FooEnum>(FooEnum.BAR, obj.sv_foo);
-			Assert.Equal(2, (int) obj.sv_foo.Value);
+				Assert.Equal(42, (int) obj.sv_int);
 
-			obj.sv_foo = FooEnum.MORE_FOO;
-			Assert.Equal<FooEnum>(FooEnum.MORE_FOO, obj.sv_foo);
-			Assert.Equal(1, (int) obj.sv_foo.Value);
+				Assert.Equal<FooEnum>(FooEnum.BAR, obj.sv_foo);
+				Assert.Equal(2, (int) obj.sv_foo.Value);
+
+				obj.sv_foo = FooEnum.MORE_FOO;
+				Assert.Equal<FooEnum>(FooEnum.MORE_FOO, obj.sv_foo);
+				Assert.Equal(1, (int) obj.sv_foo.Value);
+			}
+
+			{
+				var obj1 = new TestClass { sv_int = 99, sv_foo = FooEnum.MORE_FOO };
+				string json = JsonConvert.SerializeObject(obj1, converters);
+				var obj2 = JsonConvert.DeserializeObject<TestClass>(json, converters);
+
+				Assert.True(obj1.Equals(obj2));
+				Assert.True(obj2.Equals(obj1));
+			}
 		}
 	}
 }
