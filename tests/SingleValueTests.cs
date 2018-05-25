@@ -45,6 +45,12 @@ namespace MagicConfig.Tests
 			}
 
 			{
+				SingleValue<MyBoolean> sv1 = MyBoolean.TRUE;
+				SingleValue<MyBoolean> sv2 = MyBoolean.FILE_NOT_FOUND;
+				Assert.False(sv1.Equals(sv2));
+			}
+
+			{
 				SingleValue<MyBoolean> sv1 = MyBoolean.FILE_NOT_FOUND;
 				SingleValue<MyBoolean> sv2 = (MyBoolean) 2;
 				Assert.True(sv1.Equals(sv2));
@@ -55,6 +61,14 @@ namespace MagicConfig.Tests
 				SingleValue<int> sv2 = 42;
 				Assert.True(sv1.Equals(sv2));
 			}
+		}
+
+		[Fact]
+		public void SingleValueInvalidAssignmentThrows()
+		{
+			SingleValue<int> i1 = 4;
+			MyFalseEquatableItem i2 = new MyFalseEquatableItem();
+			Assert.Throws<ConfigItem.InvalidTypeAssignmentException>(() => i1.Assign(i2));
 		}
 
 		[Fact]
