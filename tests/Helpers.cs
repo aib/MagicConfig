@@ -27,13 +27,13 @@ namespace MagicConfig.Tests.Helpers
 
 	public class MyComposite: StaticMap<MyComposite>, IKeyedItem
 	{
-		public SingleItem<int> si;
+		public SingleValue<int> si;
 		public SingleItem<string> ss1;
 		public SingleItem<string> ss2;
 
 		public class MyNested: StaticMap<MyNested> {
-			public SingleItem<int> x;
-			public SingleItem<int> y;
+			public SingleValue<int> x;
+			public SingleValue<int> y;
 			public SingleItem<string> s;
 		}
 		public MyNested nested;
@@ -67,7 +67,7 @@ namespace MagicConfig.Tests.Helpers
 		public override string ToString() => $"MyInt({val})";
 	}
 
-	public class MyKeyedInt: SingleItem<int>, IKeyedItem, IEquatable<MyKeyedInt>
+	public class MyKeyedInt: SingleValue<int>, IKeyedItem, IEquatable<MyKeyedInt>
 	{
 		private readonly string key;
 		public MyKeyedInt(string key, int val) :base(val) { this.key = key; }

@@ -119,7 +119,7 @@ namespace MagicConfig.Tests
 			Assert.True(siUpdateCalled);
 
 			Assert.True(itemUpdates.ContainsKey("si"));
-			Assert.Equal((SingleItem<int>) 42, itemUpdates["si"]);
+			Assert.Equal((SingleValue<int>) 42, itemUpdates["si"]);
 
 			Assert.True(itemUpdates.ContainsKey("ss1"));
 			Assert.Equal((SingleItem<string>) "foo", itemUpdates["ss1"]);

@@ -27,9 +27,9 @@ namespace MagicConfig.Tests
 			}
 
 			{
-				var i = new List<SingleItem<int>> { 3, 4, 5 };
-				ItemList<SingleItem<int>> il = new ItemList<SingleItem<int>>(i);
-				IList<SingleItem<int>> o = il;
+				var i = new List<SingleValue<int>> { 3, 4, 5 };
+				ItemList<SingleValue<int>> il = new ItemList<SingleValue<int>>(i);
+				IList<SingleValue<int>> o = il;
 				Assert.Equal(i, o);
 			}
 
@@ -90,8 +90,8 @@ namespace MagicConfig.Tests
 			}
 
 			{
-				ItemList<SingleItem<int>> il1 = new ItemList<SingleItem<int>> { 3, 4, 5 };
-				ItemList<SingleItem<int>> il2 = new ItemList<SingleItem<int>> { 3, 4, 5 };
+				ItemList<SingleValue<int>> il1 = new ItemList<SingleValue<int>> { 3, 4, 5 };
+				ItemList<SingleValue<int>> il2 = new ItemList<SingleValue<int>> { 3, 4, 5 };
 				Assert.Equal(il1, il2);
 				Assert.True(il1.Equals(il2));
 			}
@@ -199,11 +199,11 @@ namespace MagicConfig.Tests
 		[Fact]
 		public void ItemListEventsAreCalled()
 		{
-			ItemList<SingleItem<int>> il  = new ItemList<SingleItem<int>> { 3, 4 };
-			ItemList<SingleItem<int>> il2 = new ItemList<SingleItem<int>> { 4, 6 };
+			ItemList<SingleValue<int>> il  = new ItemList<SingleValue<int>> { 3, 4 };
+			ItemList<SingleValue<int>> il2 = new ItemList<SingleValue<int>> { 4, 6 };
 
 			bool itemUpdatesCalled = false;
-			void itemUpdateHandler(object sender, SingleItem<int>.UpdatedArgs args) { itemUpdatesCalled = true; }
+			void itemUpdateHandler(object sender, SingleValue<int>.UpdatedArgs args) { itemUpdatesCalled = true; }
 			il[0].Updated += itemUpdateHandler;
 			il[1].Updated += itemUpdateHandler;
 			il2[0].Updated += itemUpdateHandler;
@@ -211,7 +211,7 @@ namespace MagicConfig.Tests
 
 			bool threeDeleted = false;
 			bool othersDeleted = false;
-			void deleteHandler(object sender, ItemList<SingleItem<int>>.ItemDeletedArgs args) {
+			void deleteHandler(object sender, ItemList<SingleValue<int>>.ItemDeletedArgs args) {
 				Assert.Same(il, sender);
 				Assert.False(threeDeleted);
 				Assert.False(othersDeleted);
@@ -222,7 +222,7 @@ namespace MagicConfig.Tests
 
 			bool sixAdded = false;
 			bool othersAdded = false;
-			void addHandler(object sender, ItemList<SingleItem<int>>.ItemAddedArgs args) {
+			void addHandler(object sender, ItemList<SingleValue<int>>.ItemAddedArgs args) {
 				Assert.Same(il, sender);
 				Assert.False(sixAdded);
 				Assert.False(othersAdded);
@@ -232,7 +232,7 @@ namespace MagicConfig.Tests
 			il.ItemAdded += addHandler;
 
 			bool updateCalled = false;
-			void updateHandler(object sender, ItemList<SingleItem<int>>.UpdatedArgs args) {
+			void updateHandler(object sender, ItemList<SingleValue<int>>.UpdatedArgs args) {
 				Assert.False(updateCalled);
 				updateCalled = true;
 				Assert.Same(il, sender);
