@@ -7,19 +7,19 @@ namespace MagicConfig.Adapters.Newtonsoft_Json.Test
 	public class SingleItemConverterTests
 	{
 		public class TestClass: StaticMap<TestClass> {
-			public SingleItem<int> si_int;
-			public const string JSON = "{ \"si_int\": 42 }";
+			public SingleItem<string> si_str;
+			public const string JSON = "{ \"si_str\": \"42\" }";
 		}
 
 		private void testConversion(JsonConverter[] converters)
 		{
 			{
 				var obj = JsonConvert.DeserializeObject<TestClass>(TestClass.JSON, converters);
-				Assert.Equal(42, (int) obj.si_int);
+				Assert.Equal("42", obj.si_str);
 			}
 
 			{
-				var obj1 = new TestClass { si_int = 42 };
+				var obj1 = new TestClass { si_str = "42" };
 				string json = JsonConvert.SerializeObject(obj1, converters);
 				var obj2 = JsonConvert.DeserializeObject<TestClass>(json, converters);
 
@@ -31,7 +31,7 @@ namespace MagicConfig.Adapters.Newtonsoft_Json.Test
 		[Fact]
 		public void TestSingleItemConverter()
 		{
-			testConversion(new JsonConverter[] { new SingleItemConverter<int>() });
+			testConversion(new JsonConverter[] { new SingleItemConverter<string>() });
 		}
 
 		[Fact]
