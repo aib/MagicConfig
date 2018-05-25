@@ -54,6 +54,8 @@ namespace MagicConfig.Tests.Helpers
 			return !object.ReferenceEquals(other, null) && val == other.val;
 		}
 		public override string ToString() => $"MyInt({val})";
+		public static implicit operator int(MyInt i) => i.val;
+		public static implicit operator MyInt(int v) => new MyInt(v);
 	}
 
 	public class MyIntItem: ConfigItem
