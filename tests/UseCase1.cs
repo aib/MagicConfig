@@ -11,7 +11,7 @@ namespace MagicConfig.Tests
 		public class Client: StaticMap<Client>, IKeyedItem {
 			public string name;
 			public SingleItem<string> ip;
-			public SingleItem<int> port;
+			public SingleValue<int> port;
 
 			public string GetKeyedItemKey() => name;
 		}
