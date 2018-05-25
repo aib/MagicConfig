@@ -5,7 +5,7 @@ namespace MagicConfig.Adapters.Newtonsoft_Json
 {
 	// Converter for a single SingleItem<T> type
 	public class SingleItemConverter<T>: JsonConverter<SingleItem<T>>
-		where T: IEquatable<T>
+		where T: class, IEquatable<T>
 	{
 		public override void WriteJson(JsonWriter writer, SingleItem<T> value, JsonSerializer serializer)
 		{
