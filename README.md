@@ -8,7 +8,10 @@ MagicConfig is a .NET library for creating a hierarchy of change-aware classes w
 `ConfigItem` is the base class for all other classes. It has two methods; `Equals(ConfigItem)` and `Assign(ConfigItem)`. `Assign` updates the item with another item's values, generating events where appropriate. `Equals` is called first to determine whether an update is necessary in the first place. `Assign` can throw `ConfigItem.InvalidTypeAssignmentException` if an item is being assigned with an item of incompatible type.
 
 ### SingleItem
-`SingleItem<T>` is a simple wrapper around the unrestricted type `T`. It holds a reference to the `T` value and has implicit casts back and forth. `Assign` changes the reference to another value of type `T`. `Assign` fires an `Update` event with both references.
+`SingleItem<T>` is a simple wrapper around the (reference) class `T`. It holds a reference to a `T` value and has implicit casts back and forth. (A `null` `SingleItem` converts to a `null` `T`.) `Assign` changes the reference and fires an `Update` event with both old and new references. `Equals` delegates to `T.Equals`.
+
+### SingleValue
+`SingleValue<T>` is the unrestricted version of `SingleItem`, designed for value types. It works the same as `SingleItem` except a `null` value converts to `default(T)` and `Equals` delegates to `object.Equals`.
 
 ### ItemList
 `ItemList<T>` is a list of items of type `T`, which should be `IEquatable<T>`. `Assign` compares every existing element to every new element in a Cartesian fashion, firing `ItemAdded` and `ItemDeleted` events where appropriate. `Updated` is fired if any elements are added or deleted, or the order of the list changes. References to existing items are kept where possible, removals starting from the end of the list.
@@ -23,9 +26,6 @@ If a [to-be] updated value's `Assign` throws `InvalidTypeAssignmentException`, t
 
 ### KeyedItemList
 `KeyedItemList<T>` is a hack around configurations where a map was intended but a list was used. It is a list of items of type `T`, which should be derived from `ConfigItem` and implement `IKeyedItem`. `KeyedItemList` is very similar to `DynamicMap` (it is, in fact, a direct subclass) but uses an item's `GetKeyedItemKey` method to determine its key. Duplicate and dynamic keys are handled poorly.
-
-### SingleValue
-`SingleValue<T>` is the poor man's `SingleItem`. It has no constraints on `T` and uses `object.Equals` for comparison. You are better off using `SingleItem` instead of `SingleValue` in mosts cases -- in all cases where `T` can be made `IEquatable`, probably. `SingleValue` was created for those cases when it is impossible, such as when wrapping an enum.
 
 ## Examples ##
 
