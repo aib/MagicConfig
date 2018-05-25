@@ -11,16 +11,16 @@ namespace MagicConfig.Tests
 		public void SingleItemHoldsValue()
 		{
 			{
-				SingleItem<int> si = 42;
-				Assert.Equal(42, si.Value);
-				Assert.Equal(42, (int) si);
+				SingleItem<MyInt> si = (MyInt) 42;
+				Assert.Equal((MyInt) 42, si.Value);
+				Assert.Equal((MyInt) 42, (MyInt) si);
 			}
 
 			{
-				int i = 42;
-				SingleItem<int> si = i;
+				MyInt i = 42;
+				SingleItem<MyInt> si = i;
 				Assert.Equal(i, si.Value);
-				int o = si;
+				MyInt o = si;
 				Assert.Equal(i, o);
 			}
 
@@ -44,9 +44,9 @@ namespace MagicConfig.Tests
 		[Fact]
 		public void SingleItemDoesNotEqualNull()
 		{
-			SingleItem<int> si = 42;
+			SingleItem<MyInt> si = new MyInt(42);
 			Assert.False(si.Equals(null));
-			Assert.False(si.Equals((SingleItem<int>) null));
+			Assert.False(si.Equals((SingleItem<MyInt>) null));
 			Assert.False(si.Equals((SingleItem<string>) null));
 			Assert.False(si.Equals((ConfigItem) null));
 		}
@@ -54,8 +54,8 @@ namespace MagicConfig.Tests
 		[Fact]
 		public void SingleItemEqualsWorks()
 		{
-			SingleItem<int> si1 = 42;
-			SingleItem<int> si2 = 42;
+			SingleItem<MyInt> si1 = (MyInt) 42;
+			SingleItem<MyInt> si2 = new MyInt(42);
 			Assert.True(si1.Equals(si2));
 		}
 
@@ -79,7 +79,7 @@ namespace MagicConfig.Tests
 		[Fact]
 		public void SingleItemInvalidAssignmentThrows()
 		{
-			SingleItem<int> i1 = 4;
+			SingleItem<MyInt> i1 = (MyInt) 4;
 			MyFalseEquatableItem i2 = new MyFalseEquatableItem();
 			Assert.Throws<ConfigItem.InvalidTypeAssignmentException>(() => i1.Assign(i2));
 		}
@@ -87,25 +87,25 @@ namespace MagicConfig.Tests
 		[Fact]
 		public void SingleItemAssignmentChangesValue()
 		{
-			SingleItem<int> i1 = 4;
-			SingleItem<int> i2 = 42;
+			SingleItem<MyInt> i1 = (MyInt) 4;
+			SingleItem<MyInt> i2 = (MyInt) 42;
 			i1.Assign(i2);
-			Assert.Equal(42, (int) i2);
+			Assert.Equal<MyInt>(new MyInt(42), i2);
 		}
 
 		[Fact]
 		public void SingleItemUpdateEventIsCalled()
 		{
-			SingleItem<int> si1 = 4;
-			SingleItem<int> si2 = 42;
+			SingleItem<MyInt> si1 = new MyInt(4);
+			SingleItem<MyInt> si2 = new MyInt(42);
 
 			bool updateCalled = false;
-			void updateHandler(object sender, SingleItem<int>.UpdatedArgs args) {
+			void updateHandler(object sender, SingleItem<MyInt>.UpdatedArgs args) {
 				Assert.False(updateCalled);
 				updateCalled = true;
 				Assert.Same(si1, sender);
-				Assert.Equal(4, args.OldValue);
-				Assert.Equal(42, args.NewValue);
+				Assert.Equal<MyInt>(4, args.OldValue);
+				Assert.Equal<MyInt>(42, args.NewValue);
 			}
 			si1.Updated += updateHandler;
 
