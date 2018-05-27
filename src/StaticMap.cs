@@ -10,7 +10,7 @@ namespace MagicConfig
 	public class StaticMap<T>: Map<ConfigItem>, IEquatable<StaticMap<T>>, IEquatable<T>
 	{
 		public class ItemUpdatedArgs: EventArgs { public string Key; public ConfigItem Item; }
-		public class UpdatedArgs:     EventArgs {}
+		public class UpdatedArgs:     EventArgs { public IEnumerable<KeyValuePair<string, ConfigItem>> UpdatedItems; }
 		public event EventHandler<ItemUpdatedArgs> ItemUpdated;
 		public event EventHandler<UpdatedArgs>     Updated;
 
@@ -75,7 +75,7 @@ namespace MagicConfig
 				}
 
 				updated.ForEach(kv => ItemUpdated?.Invoke(this, new ItemUpdatedArgs { Key = kv.Key, Item = kv.Value }));
-				Updated?.Invoke(this, new UpdatedArgs());
+				Updated?.Invoke(this, new UpdatedArgs { UpdatedItems = updated });
 			} else {
 				throw new InvalidTypeAssignmentException(this, other);
 			}
