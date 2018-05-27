@@ -11,7 +11,7 @@ namespace MagicConfig
 	{
 		public class ItemDeletedArgs: EventArgs { public T OldItem; }
 		public class ItemAddedArgs:   EventArgs { public T NewItem; }
-		public class UpdatedArgs:     EventArgs { public IList<T> NewList; }
+		public class UpdatedArgs:     EventArgs { public IEnumerable<T> DeletedItems; public IEnumerable<T> AddedItems; public IList<T> NewList; }
 		public event EventHandler<ItemDeletedArgs> ItemDeleted;
 		public event EventHandler<ItemAddedArgs>   ItemAdded;
 		public event EventHandler<UpdatedArgs>     Updated;
@@ -73,8 +73,9 @@ namespace MagicConfig
 
 				list.ForEach(i => ItemDeleted?.Invoke(this, new ItemDeletedArgs { OldItem = i }));
 				added.ForEach(i => ItemAdded?.Invoke(this, new ItemAddedArgs { NewItem = i }));
+				var updatedArgs = new UpdatedArgs { DeletedItems = list, AddedItems = added, NewList = newList };
 				list = newList;
-				Updated?.Invoke(this, new UpdatedArgs { NewList = newList });
+				Updated?.Invoke(this, updatedArgs);
 			} else {
 				throw new InvalidTypeAssignmentException(this, other);
 			}
