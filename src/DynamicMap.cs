@@ -45,13 +45,13 @@ namespace MagicConfig
 		public override void Assign(ConfigItem other)
 		{
 			if (other is DynamicMap<T> otherMap) {
-				var deleted = new List<(string, T)>();
-				var added   = new List<(string, T)>();
-				var updated = new List<(string, T)>();
+				var deleted = new List<KeyValuePair<string, T>>();
+				var added   = new List<KeyValuePair<string, T>>();
+				var updated = new List<KeyValuePair<string, T>>();
 
 				foreach (var key in _mapKeys().ToList()) {
 					if (!otherMap._mapKeys().Contains(key)) {
-						deleted.Add((key, _mapGet(key)));
+						deleted.Add(new KeyValuePair<string, T>(key, _mapGet(key)));
 						dictionary.Remove(key);
 					}
 				}
@@ -66,29 +66,29 @@ namespace MagicConfig
 								continue;
 							} else {
 								dictionary[key] = newItem;
-								added.Add((key, newItem));
+								added.Add(new KeyValuePair<string, T>(key, newItem));
 							}
 						} else {
 							if (!oldItem.Equals(newItem)) {
 								try {
 									oldItem.Assign(newItem);
-									updated.Add((key, oldItem));
+									updated.Add(new KeyValuePair<string, T>(key, oldItem));
 								} catch (InvalidTypeAssignmentException) {
-									deleted.Add((key, oldItem));
+									deleted.Add(new KeyValuePair<string, T>(key, oldItem));
 									dictionary[key] = newItem;
-									added.Add((key, newItem));
+									added.Add(new KeyValuePair<string, T>(key, newItem));
 								}
 							}
 						}
 					} else {
 						dictionary[key] = newItem;
-						added.Add((key, newItem));
+						added.Add(new KeyValuePair<string, T>(key, newItem));
 					}
 				}
 
-				deleted.ForEach(kv => ItemDeleted?.Invoke(this, new ItemDeletedArgs { Key = kv.Item1, OldItem = kv.Item2 }));
-				added  .ForEach(kv => ItemAdded  ?.Invoke(this, new ItemAddedArgs   { Key = kv.Item1, NewItem = kv.Item2 }));
-				updated.ForEach(kv => ItemUpdated?.Invoke(this, new ItemUpdatedArgs { Key = kv.Item1,    Item = kv.Item2 }));
+				deleted.ForEach(kv => ItemDeleted?.Invoke(this, new ItemDeletedArgs { Key = kv.Key, OldItem = kv.Value }));
+				added  .ForEach(kv => ItemAdded  ?.Invoke(this, new ItemAddedArgs   { Key = kv.Key, NewItem = kv.Value }));
+				updated.ForEach(kv => ItemUpdated?.Invoke(this, new ItemUpdatedArgs { Key = kv.Key,    Item = kv.Value }));
 				Updated?.Invoke(this, new UpdatedArgs());
 			} else {
 				throw new InvalidTypeAssignmentException(this, other);
