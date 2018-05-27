@@ -270,6 +270,8 @@ namespace MagicConfig.Tests
 			void updateHandler(object sender, ItemList<string>.UpdatedArgs args) {
 				Assert.False(updateCalled);
 				updateCalled = true;
+				Assert.Empty(args.AddedItems);
+				Assert.Empty(args.DeletedItems);
 			}
 			il.Updated += updateHandler;
 
@@ -282,8 +284,8 @@ namespace MagicConfig.Tests
 		[Fact]
 		public void ItemListEventsWithDuplicateValues()
 		{
-			ItemList<int> il  = new ItemList<int> { 100, 3, 2, 3, 3, 5, 5, 4, 8, 1 };
-			ItemList<int> il2 = new ItemList<int> {   1, 6, 3, 4, 5, 4, 4, 2, 9, 9, 100 };
+			ItemList<int> il  = new ItemList<int> { 100, 3, 2, 3, 3, 5, 8, 4, 5, 1 };
+			ItemList<int> il2 = new ItemList<int> {   1, 6, 3, 4, 5, 9, 4, 2, 4, 9, 100 };
 
 			void increment<T>(Dictionary<T, int> dict, T key) { dict.TryGetValue(key, out int value); dict[key] = value + 1; }
 			var adds = new Dictionary<int, int>();
@@ -299,13 +301,15 @@ namespace MagicConfig.Tests
 				updateCalled = true;
 				Assert.Same(il, sender);
 				Assert.Equal(il2, args.NewList);
+				Assert.Equal(new[] { 3, 3, 8, 5 }, args.DeletedItems);
+				Assert.Equal(new[] { 6, 9, 4, 4, 9 }, args.AddedItems);
 			}
 			il.Updated += updateHandler;
 
 			il.Assign(il2);
 
-			Assert.Equal(new Dictionary<int, int> { {3, 2}, {5, 1}, {8, 1} }, dels);
-			Assert.Equal(new Dictionary<int, int> { {6, 1}, {4, 2}, {9, 2} }, adds);
+			Assert.Equal(new Dictionary<int, int> { {3, 2}, {8, 1}, {5, 1} }, dels);
+			Assert.Equal(new Dictionary<int, int> { {6, 1}, {9, 2}, {4, 2} }, adds);
 			Assert.True(updateCalled);
 		}
 
