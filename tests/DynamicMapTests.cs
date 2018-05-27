@@ -1,6 +1,7 @@
 using MagicConfig;
 using MagicConfig.Tests.Helpers;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace MagicConfig.Tests
@@ -181,6 +182,29 @@ namespace MagicConfig.Tests
 			}
 			dm["b"].Updated += fourUpdateHandler;
 
+			bool mapUpdateCalled = false;
+			dm.Updated += (sender, args) => {
+				Assert.False(mapUpdateCalled);
+				mapUpdateCalled = true;
+
+				var deleted = new List<KeyValuePair<string, SingleValue<int>>>(args.DeletedItems);
+				Assert.Single(deleted);
+				Assert.Equal("a", deleted[0].Key);
+				Assert.Same(three, deleted[0].Value);
+
+				var added = new List<KeyValuePair<string, SingleValue<int>>>(args.AddedItems);
+				Assert.Equal(2, added.Count);
+				Assert.Equal("c", added[0].Key);
+				Assert.Same(five, added[0].Value);
+				Assert.Equal("n2", added[1].Key);
+				Assert.Same(n2, added[1].Value);
+
+				var updated = new List<KeyValuePair<string, SingleValue<int>>>(args.UpdatedItems);
+				Assert.Single(updated);
+				Assert.Equal("b", updated[0].Key);
+				Assert.Same(four, updated[0].Value);
+			};
+
 			dm.Assign(dm2);
 
 			Assert.True(threeDeleted);
@@ -194,6 +218,8 @@ namespace MagicConfig.Tests
 			Assert.False(othersUpdated);
 
 			Assert.True(fourObjectUpdated);
+
+			Assert.True(mapUpdateCalled);
 
 			Assert.Equal(four, dm["b"]);
 			Assert.Equal<SingleValue<int>>(42, four);
