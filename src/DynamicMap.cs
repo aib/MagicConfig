@@ -14,7 +14,11 @@ namespace MagicConfig
 		public class ItemDeletedArgs: EventArgs { public string Key; public T OldItem; }
 		public class ItemAddedArgs:   EventArgs { public string Key; public T NewItem; }
 		public class ItemUpdatedArgs: EventArgs { public string Key; public T Item;    }
-		public class UpdatedArgs:     EventArgs {}
+		public class UpdatedArgs:     EventArgs {
+			public IEnumerable<KeyValuePair<string, T>> DeletedItems;
+			public IEnumerable<KeyValuePair<string, T>> AddedItems;
+			public IEnumerable<KeyValuePair<string, T>> UpdatedItems;
+		}
 		public event EventHandler<ItemDeletedArgs> ItemDeleted;
 		public event EventHandler<ItemAddedArgs>   ItemAdded;
 		public event EventHandler<ItemUpdatedArgs> ItemUpdated;
@@ -89,7 +93,7 @@ namespace MagicConfig
 				deleted.ForEach(kv => ItemDeleted?.Invoke(this, new ItemDeletedArgs { Key = kv.Key, OldItem = kv.Value }));
 				added  .ForEach(kv => ItemAdded  ?.Invoke(this, new ItemAddedArgs   { Key = kv.Key, NewItem = kv.Value }));
 				updated.ForEach(kv => ItemUpdated?.Invoke(this, new ItemUpdatedArgs { Key = kv.Key,    Item = kv.Value }));
-				Updated?.Invoke(this, new UpdatedArgs());
+				Updated?.Invoke(this, new UpdatedArgs { DeletedItems = deleted, AddedItems = added, UpdatedItems = updated });
 			} else {
 				throw new InvalidTypeAssignmentException(this, other);
 			}
