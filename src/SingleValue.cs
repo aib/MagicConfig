@@ -48,5 +48,7 @@ namespace MagicConfig
 				throw new InvalidTypeAssignmentException(this, other);
 			}
 		}
+
+		public override string ToString() => value.ToString();
 	}
 }
