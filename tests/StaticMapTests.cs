@@ -88,8 +88,10 @@ namespace MagicConfig.Tests
 		[Fact]
 		public void StaticMapUpdateEventIsCalled()
 		{
-			MyComposite sm =  new MyComposite { si = 40, ss1 = "not foo", ss2 = null,  nested = new MyComposite.MyNested { x = 10, y = 20, s = "bar"  } };
-			MyComposite sm2 = new MyComposite { si = 42, ss1 = "foo",	  ss2 = "bar", nested = new MyComposite.MyNested { x = 11, y = 20, s = "barz" } };
+			MyComposite.MyNested nested1 = new MyComposite.MyNested { x = 10, y = 20, s = "bar"  };
+			MyComposite.MyNested nested2 = new MyComposite.MyNested { x = 11, y = 20, s = "barz" };
+			MyComposite sm =  new MyComposite { si = 40, ss1 = "not foo", ss2 = null,  nested = nested1 };
+			MyComposite sm2 = new MyComposite { si = 42, ss1 = "foo",	  ss2 = "bar", nested = nested2 };
 
 			bool updateCalled = false;
 			void updateHandler(object sender, StaticMap<MyComposite>.UpdatedArgs args) {
@@ -97,6 +99,17 @@ namespace MagicConfig.Tests
 				updateCalled = true;
 				Assert.Same(sm, sender);
 				Assert.Equal("foo", sm.ss1);
+
+				var updated = new List<KeyValuePair<string, ConfigItem>>(args.UpdatedItems);
+				Assert.Equal(4, updated.Count);
+				Assert.Equal("si", updated[0].Key);
+				Assert.Equal(new SingleValue<int>(42), (SingleValue<int>) updated[0].Value);
+				Assert.Equal("ss1", updated[1].Key);
+				Assert.Equal("foo", (SingleItem<string>) updated[1].Value);
+				Assert.Equal("ss2", updated[2].Key);
+				Assert.Equal("bar", (SingleItem<string>) updated[2].Value);
+				Assert.Equal("nested", updated[3].Key);
+				Assert.Same(nested1, updated[3].Value);
 			}
 			sm.Updated += updateHandler;
 
