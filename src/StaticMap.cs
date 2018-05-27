@@ -53,7 +53,7 @@ namespace MagicConfig
 		public override void Assign(ConfigItem other)
 		{
 			if (other is StaticMap<T> otherMap) {
-				var updated = new List<(string, ConfigItem)>();
+				var updated = new List<KeyValuePair<string, ConfigItem>>();
 
 				foreach (var key in _mapKeys()) {
 					var oldItem = _mapGet(key);
@@ -64,17 +64,17 @@ namespace MagicConfig
 							continue;
 						} else {
 							fields[key].SetValue(this, newItem);
-							updated.Add((key, newItem));
+							updated.Add(new KeyValuePair<string, ConfigItem>(key, newItem));
 						}
 					} else {
 						if (!oldItem.Equals(newItem)) {
 							oldItem.Assign(newItem);
-							updated.Add((key, oldItem));
+							updated.Add(new KeyValuePair<string, ConfigItem>(key, oldItem));
 						}
 					}
 				}
 
-				updated.ForEach(kv => ItemUpdated?.Invoke(this, new ItemUpdatedArgs { Key = kv.Item1, Item = kv.Item2 }));
+				updated.ForEach(kv => ItemUpdated?.Invoke(this, new ItemUpdatedArgs { Key = kv.Key, Item = kv.Value }));
 				Updated?.Invoke(this, new UpdatedArgs());
 			} else {
 				throw new InvalidTypeAssignmentException(this, other);
