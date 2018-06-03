@@ -52,6 +52,7 @@ namespace MagicConfig
 				var deleted = new List<KeyValuePair<string, T>>();
 				var added   = new List<KeyValuePair<string, T>>();
 				var updated = new List<KeyValuePair<string, T>>();
+				var assignmentExceptions = new List<InvalidAssignmentException>();
 
 				foreach (var key in _mapKeys().ToList()) {
 					if (!otherMap._mapKeys().Contains(key)) {
@@ -78,8 +79,12 @@ namespace MagicConfig
 								dictionary[key] = newItem;
 							} else {
 								if (!oldItem.Equals(newItem)) {
-									oldItem.Assign(newItem);
-									updated.Add(new KeyValuePair<string, T>(key, oldItem));
+									try {
+										oldItem.Assign(newItem);
+										updated.Add(new KeyValuePair<string, T>(key, oldItem));
+									} catch (InvalidAssignmentException e) {
+										assignmentExceptions.Add(e);
+									}
 								}
 							}
 						}
@@ -93,6 +98,10 @@ namespace MagicConfig
 				added  .ForEach(kv => ItemAdded  ?.Invoke(this, new ItemAddedArgs   { Key = kv.Key, NewItem = kv.Value }));
 				updated.ForEach(kv => ItemUpdated?.Invoke(this, new ItemUpdatedArgs { Key = kv.Key,    Item = kv.Value }));
 				Updated?.Invoke(this, new UpdatedArgs { DeletedItems = deleted, AddedItems = added, UpdatedItems = updated });
+
+				if (assignmentExceptions.Count > 0) {
+					throw new InvalidChildAssignmentException(assignmentExceptions);
+				}
 			} else {
 				throw new InvalidTypeAssignmentException(this, other);
 			}
