@@ -56,6 +56,7 @@ namespace MagicConfig
 		{
 			if (other is StaticMap<T> otherMap) {
 				var updated = new List<KeyValuePair<string, ConfigItem>>();
+				var assignmentExceptions = new List<InvalidAssignmentException>();
 
 				foreach (var key in _mapKeys()) {
 					var oldItem = _mapGet(key);
@@ -70,14 +71,22 @@ namespace MagicConfig
 						}
 					} else {
 						if (!oldItem.Equals(newItem)) {
-							oldItem.Assign(newItem);
-							updated.Add(new KeyValuePair<string, ConfigItem>(key, oldItem));
+							try {
+								oldItem.Assign(newItem);
+								updated.Add(new KeyValuePair<string, ConfigItem>(key, oldItem));
+							} catch (InvalidAssignmentException e) {
+								assignmentExceptions.Add(e);
+							}
 						}
 					}
 				}
 
 				updated.ForEach(kv => ItemUpdated?.Invoke(this, new ItemUpdatedArgs { Key = kv.Key, Item = kv.Value }));
 				Updated?.Invoke(this, new UpdatedArgs { UpdatedItems = updated });
+
+				if (assignmentExceptions.Count > 0) {
+					throw new InvalidChildAssignmentException(assignmentExceptions);
+				}
 			} else {
 				throw new InvalidTypeAssignmentException(this, other);
 			}
