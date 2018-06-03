@@ -63,9 +63,41 @@ namespace MagicConfig.Tests
 		[Fact]
 		public void StaticMapInvalidAssignmentThrows()
 		{
-			MyComposite sm = new MyComposite();
-			ConfigItem ci = new MyFalseEquatableItem();
-			Assert.Throws<ConfigItem.InvalidTypeAssignmentException>(() => sm.Assign(ci));
+			{
+				MyComposite sm = new MyComposite();
+				ConfigItem ci = new MyFalseEquatableItem();
+				Assert.Throws<ConfigItem.InvalidTypeAssignmentException>(() => sm.Assign(ci));
+			}
+
+			{
+				MyComposite sm  = new MyComposite();
+				MyComposite sm2 = new MyComposite { ss1 = null, nested = new MyComposite.MyNested { s = null } };
+
+				bool thrown = false;
+				try {
+					sm.Assign(sm2);
+				} catch (ConfigItem.InvalidChildAssignmentException e) {
+					thrown = true;
+					var childExceptions = new List<ConfigItem.InvalidAssignmentException>(e.ChildExceptions);
+
+					Assert.Equal(2, childExceptions.Count);
+
+					Assert.IsType<ConfigItem.InvalidTypeAssignmentException>(childExceptions[0]);
+					var ce0 = (ConfigItem.InvalidTypeAssignmentException) childExceptions[0];
+					Assert.Equal(new SingleItem<string>(), ce0.OldItem);
+					Assert.Null(ce0.NewItem);
+
+					Assert.IsType<ConfigItem.InvalidChildAssignmentException>(childExceptions[1]);
+					var ce1 = (ConfigItem.InvalidChildAssignmentException) childExceptions[1];
+					var ce1ce = new List<ConfigItem.InvalidAssignmentException>(ce1.ChildExceptions);
+					Assert.Single(ce1ce);
+					Assert.IsType<ConfigItem.InvalidTypeAssignmentException>(ce1ce[0]);
+					var ce1ce0 = (ConfigItem.InvalidTypeAssignmentException) ce1ce[0];
+					Assert.Equal(new SingleItem<string>(), ce1ce0.OldItem);
+					Assert.Null(ce1ce0.NewItem);
+				}
+				Assert.True(thrown);
+			}
 		}
 
 		[Fact]
