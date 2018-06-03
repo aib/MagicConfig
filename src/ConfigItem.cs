@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace MagicConfig
 {
@@ -15,6 +16,12 @@ namespace MagicConfig
 				{ OldItem = oldItem; NewItem = newItem; }
 		}
 
+		// Thrown by multi-item classes when one or more children throw InvalidAssignmentException
+		public class InvalidChildAssignmentException: InvalidAssignmentException {
+			public readonly IEnumerable<InvalidAssignmentException> ChildExceptions;
+			public InvalidChildAssignmentException(IEnumerable<InvalidAssignmentException> childExceptions)
+				{ ChildExceptions = childExceptions; }
+		}
 
 		public abstract bool Equals(ConfigItem item);
 
