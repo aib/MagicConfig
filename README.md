@@ -5,7 +5,7 @@ MagicConfig is a .NET library for creating a hierarchy of change-aware classes w
 ## Classes
 
 ### ConfigItem
-`ConfigItem` is the base class for all other classes. It has two methods; `Equals(ConfigItem)` and `Assign(ConfigItem)`. `Assign` updates the item with another item's values, generating events where appropriate. `Equals` is called first to determine whether an update is necessary in the first place. `Assign` can throw `ConfigItem.InvalidTypeAssignmentException` if an item is being assigned with an item of incompatible type.
+`ConfigItem` is the base class for all other classes. It has two methods; `Equals(ConfigItem)` and `Assign(ConfigItem)`. `Assign` updates the item with another item's values, generating events where appropriate. `Equals` is called first to determine whether an update is necessary in the first place. `Assign` can throw `ConfigItem.InvalidTypeAssignmentException` if an item is being assigned with an item of incompatible type or `null`.
 
 ### SingleItem
 `SingleItem<T>` is a simple wrapper around the (reference) class `T`. It holds a reference to a `T` value and has implicit casts back and forth. (A `null` `SingleItem` converts to a `null` `T`.) `Assign` changes the reference and fires an `Update` event with both old and new references. `Equals` delegates to `T.Equals`.
