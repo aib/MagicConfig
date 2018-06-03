@@ -23,9 +23,14 @@ namespace MagicConfig
 			list = new List<T>();
 		}
 
-		public ItemList(IEnumerable<T> e)
+		public ItemList(IEnumerable<T> es)
+			:this()
 		{
-			list = new List<T>(e);
+			if (es != null) {
+				foreach (T e in es) {
+					Add(e);
+				}
+			}
 		}
 
 		public static implicit operator List<T>(ItemList<T> l)
