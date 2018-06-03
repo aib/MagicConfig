@@ -133,7 +133,8 @@ namespace MagicConfig.Tests
 
 			Assert.Equal("bar", (SingleItem<string>) dm["name"]);
 			Assert.Equal<int>(40, (SingleValue<int>) dm["number"]);
-			Assert.Equal(sm2, dm["smap"]);
+			Assert.Equal<int>(43, ((MyComposite) dm["smap"]).si);
+			Assert.Same(sm1, dm["smap"]);
 		}
 
 		[Fact]
