@@ -22,8 +22,6 @@ MagicConfig is a .NET library for creating a hierarchy of change-aware classes w
 ### DynamicMap
 `DynamicMap<T>` is an untyped map or dictionary from `string`s to `T`s. The type `T` should be derived from `ConfigItem`. Unlike `StaticMap`, `DynamicMap` does not inspect its instance and is not meant to be inherited by user classes. In this regard it is much more similar to a `Dictionary<string, ConfigItem>`. `Assign` uses the keys to determine whether an item needs to be added, updated or deleted, firing `ItemAdded`, `ItemUpdated` and `ItemDeleted`  where appropriate, as well as an overall `Updated` event.
 
-If a [to-be] updated value's `Assign` throws `InvalidTypeAssignmentException`, the assignment is replaced by a deletion and an addition.
-
 ### KeyedItemList
 `KeyedItemList<T>` is a hack around configurations where a map was intended but a list was used. It is a list of items of type `T`, which should be derived from `ConfigItem` and implement `IKeyedItem`. `KeyedItemList` is very similar to `DynamicMap` (it is, in fact, a direct subclass) but uses an item's `GetKeyedItemKey` method to determine its key. Duplicate and dynamic keys are handled poorly.
 
