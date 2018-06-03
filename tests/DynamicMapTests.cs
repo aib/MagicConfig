@@ -228,48 +228,6 @@ namespace MagicConfig.Tests
 		}
 
 		[Fact]
-		public void DynamicMapAssigningADifferentTypeFiresAddAndDelete()
-		{
-			DynamicMap<ConfigItem> dm  = new DynamicMap<ConfigItem> { {"a", new SingleValue<int>(3)},        {"x", new SingleItem<string>("four")}  };
-			DynamicMap<ConfigItem> dm2 = new DynamicMap<ConfigItem> { {"x", new SingleItem<string>("four")}, {"a", new SingleItem<string>("three")} };
-
-			bool threeDeleted = false;
-			bool othersDeleted = false;
-			void deleteHandler(object sender, DynamicMap<ConfigItem>.ItemDeletedArgs args) {
-				Assert.Same(dm, sender);
-				Assert.False(threeDeleted);
-				Assert.False(othersDeleted);
-				if (args.Key == "a" && args.OldItem is SingleValue<int> oi && (int) oi == 3) threeDeleted = true;
-				else othersDeleted = true;
-			}
-			dm.ItemDeleted += deleteHandler;
-
-			bool threeAdded = false;
-			bool othersAdded = false;
-			void addHandler(object sender, DynamicMap<ConfigItem>.ItemAddedArgs args) {
-				Assert.Same(dm, sender);
-				Assert.False(threeAdded);
-				Assert.False(othersAdded);
-				if (args.Key == "a" && args.NewItem is SingleItem<string> os && (string) os == "three") threeAdded = true;
-				else othersAdded = true;
-			}
-			dm.ItemAdded += addHandler;
-
-			dm.ItemUpdated += (sender, args) => Assert.False(true);
-
-			dm.Assign(dm2);
-
-			Assert.True(threeDeleted);
-			Assert.False(othersDeleted);
-
-			Assert.True(threeAdded);
-			Assert.False(othersAdded);
-
-			Assert.Equal("three", (SingleItem<string>) dm["a"]);
-			Assert.Equal("four", (SingleItem<string>) dm["x"]);
-		}
-
-		[Fact]
 		public void DynamicMapAssignKeepsReferences()
 		{
 			var three = new MyIntItem(3);
