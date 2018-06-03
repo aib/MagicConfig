@@ -33,7 +33,9 @@ namespace MagicConfig
 
 		public bool Equals(SingleItem<T> other)
 		{
-			return !object.ReferenceEquals(other, null) && value.Equals(other.value);
+			return !object.ReferenceEquals(other, null) &&
+				((object.ReferenceEquals(value, null) && object.ReferenceEquals(other.value, null)) ||
+					!object.ReferenceEquals(value, null) && value.Equals(other.value));
 		}
 
 		public override bool Equals(ConfigItem other)
