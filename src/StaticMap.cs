@@ -27,13 +27,7 @@ namespace MagicConfig
 
 		public bool Equals(T other)
 		{
-			StaticMap<T> otherMap;
-			try {
-				otherMap = (StaticMap<T>) (object) other;
-			} catch (InvalidCastException) {
-				otherMap = null;
-			}
-			return Equals(otherMap);
+			return Equals(other as StaticMap<T>);
 		}
 
 		public bool Equals(StaticMap<T> other)
