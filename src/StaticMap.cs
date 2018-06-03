@@ -23,6 +23,14 @@ namespace MagicConfig
 				.Select(mi => mi as FieldInfo).Where(fi => fi != null)
 				.Where(fi => typeof(ConfigItem).IsAssignableFrom(fi.FieldType))
 				.ToDictionary(fi => fi.Name);
+
+			foreach (var fi in fields.Values) {
+				if (object.ReferenceEquals(fi.GetValue(this), null)) {
+					try {
+						fi.SetValue(this, Activator.CreateInstance(fi.FieldType));
+					} catch (MissingMethodException) {}
+				}
+			}
 		}
 
 		public bool Equals(T other)
