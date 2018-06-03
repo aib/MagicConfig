@@ -14,6 +14,8 @@ namespace MagicConfig
 		private T value;
 		public T Value => value;
 
+		public SingleItem() :this(null) {}
+
 		public SingleItem(T value)
 		{
 			this.value = value;

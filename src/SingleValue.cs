@@ -13,6 +13,8 @@ namespace MagicConfig
 		private T value;
 		public T Value => value;
 
+		public SingleValue() :this(default(T)) {}
+
 		public SingleValue(T value)
 		{
 			this.value = value;
