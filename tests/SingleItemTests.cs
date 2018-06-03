@@ -54,9 +54,26 @@ namespace MagicConfig.Tests
 		[Fact]
 		public void SingleItemEqualsWorks()
 		{
-			SingleItem<MyInt> si1 = (MyInt) 42;
-			SingleItem<MyInt> si2 = new MyInt(42);
-			Assert.True(si1.Equals(si2));
+			{
+				SingleItem<MyInt> si1 = (MyInt) 42;
+				SingleItem<MyInt> si2 = new MyInt(42);
+
+				Assert.True(si1.Equals(si2));
+				Assert.True(si2.Equals(si1));
+
+				Assert.True(si1.Equals(si1));
+				Assert.True(si2.Equals(si2));
+			}
+
+			{
+				SingleItem<MyInt> si = new SingleItem<MyInt>(new MyInt(42));
+				SingleItem<MyInt> ni = new SingleItem<MyInt>(null);
+
+				Assert.True(si.Equals(si));
+				Assert.False(si.Equals(ni));
+				Assert.False(ni.Equals(si));
+				Assert.True(ni.Equals(ni));
+			}
 		}
 
 		[Fact]
