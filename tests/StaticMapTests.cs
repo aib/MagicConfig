@@ -143,5 +143,23 @@ namespace MagicConfig.Tests
 			Assert.True(itemUpdates.ContainsKey("nested"));
 			Assert.Equal(new MyComposite.MyNested{x=11, y=20, s="barz"}, itemUpdates["nested"]);
 		}
+
+		[Fact]
+		public void StaticMapFieldsAreInitialized()
+		{
+			MyComposite sm = new MyComposite { ss1 = "foo" } ;
+
+			Assert.Equal(new SingleValue<int>(), sm.si);
+			Assert.Equal("foo", sm.ss1);
+			Assert.Equal(new SingleItem<string>(), sm.ss2);
+			Assert.Equal("default", sm.ss_with_default);
+
+			Assert.Equal(new MyComposite.MyNested(), sm.nested);
+
+			Assert.Null(sm.ci);
+
+			Assert.Equal(default(int), sm.ignored_int);
+			Assert.Null(sm.ignored_string);
+		}
 	}
 }
