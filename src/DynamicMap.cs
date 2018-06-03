@@ -73,14 +73,19 @@ namespace MagicConfig
 								added.Add(new KeyValuePair<string, T>(key, newItem));
 							}
 						} else {
-							if (!oldItem.Equals(newItem)) {
-								try {
-									oldItem.Assign(newItem);
-									updated.Add(new KeyValuePair<string, T>(key, oldItem));
-								} catch (InvalidTypeAssignmentException) {
-									deleted.Add(new KeyValuePair<string, T>(key, oldItem));
-									dictionary[key] = newItem;
-									added.Add(new KeyValuePair<string, T>(key, newItem));
+							if (object.ReferenceEquals(newItem, null)) {
+								deleted.Add(new KeyValuePair<string, T>(key, oldItem));
+								dictionary[key] = newItem;
+							} else {
+								if (!oldItem.Equals(newItem)) {
+									try {
+										oldItem.Assign(newItem);
+										updated.Add(new KeyValuePair<string, T>(key, oldItem));
+									} catch (InvalidTypeAssignmentException) {
+										deleted.Add(new KeyValuePair<string, T>(key, oldItem));
+										dictionary[key] = newItem;
+										added.Add(new KeyValuePair<string, T>(key, newItem));
+									}
 								}
 							}
 						}
