@@ -283,5 +283,36 @@ namespace MagicConfig.Tests
 			Assert.Same(four, dm["b"]);
 			Assert.Same(newFive, dm["c"]);
 		}
+
+		[Fact]
+		public void DynamicMapNullAssignmentFiresAddAndDelete()
+		{
+			var three = new MyIntItem(3);
+			var four = new MyIntItem(4);
+			DynamicMap<MyIntItem> dm  = new DynamicMap<MyIntItem> { { "fromnull", null }, { "tonull", three } };
+			DynamicMap<MyIntItem> dm2 = new DynamicMap<MyIntItem> { { "fromnull", four }, { "tonull", null  } };
+
+			bool added = false;
+			dm.ItemAdded += (sender, args) => {
+				Assert.False(added);
+				added = true;
+				Assert.Equal("fromnull", args.Key);
+				Assert.Same(four, args.NewItem);
+			};
+
+			dm.ItemUpdated += (sender, args) => Assert.False(true);
+
+			bool deleted = false;
+			dm.ItemDeleted += (sender, args) => {
+				Assert.False(deleted);
+				deleted = true;
+				Assert.Equal("tonull", args.Key);
+				Assert.Same(three, args.OldItem);
+			};
+
+			dm.Assign(dm2);
+			Assert.True(added);
+			Assert.True(deleted);
+		}
 	}
 }
