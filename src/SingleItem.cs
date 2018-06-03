@@ -52,6 +52,6 @@ namespace MagicConfig
 			}
 		}
 
-		public override string ToString() => value.ToString();
+		public override string ToString() => value?.ToString();
 	}
 }
