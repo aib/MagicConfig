@@ -30,6 +30,7 @@ namespace MagicConfig.Tests.Helpers
 		public SingleValue<int> si;
 		public SingleItem<string> ss1;
 		public SingleItem<string> ss2;
+		public SingleItem<string> ss_with_default = "default";
 
 		public class MyNested: StaticMap<MyNested> {
 			public SingleValue<int> x;
