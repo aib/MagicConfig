@@ -2,6 +2,7 @@ using MagicConfig;
 using MagicConfig.Tests.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace MagicConfig.Tests
@@ -116,9 +117,36 @@ namespace MagicConfig.Tests
 		[Fact]
 		public void DynamicMapInvalidAssignmentThrows()
 		{
-			DynamicMap<ConfigItem> dm = new DynamicMap<ConfigItem> { {"name", (SingleItem<string>) "foo"}, {"number", (SingleValue<int>) 42} };
-			ConfigItem ci = new MyFalseEquatableItem();
-			Assert.Throws<ConfigItem.InvalidTypeAssignmentException>(() => dm.Assign(ci));
+			{
+				DynamicMap<ConfigItem> dm = new DynamicMap<ConfigItem> { {"name", (SingleItem<string>) "foo"}, {"number", (SingleValue<int>) 42} };
+				ConfigItem ci = new MyFalseEquatableItem();
+				Assert.Throws<ConfigItem.InvalidTypeAssignmentException>(() => dm.Assign(ci));
+			}
+
+			{
+				DynamicMap<ConfigItem> dm  = new DynamicMap<ConfigItem> { {"name", (SingleItem<string>) "foo"}, {"comp", new MyComposite { ss1 = "foo" } } };
+				DynamicMap<ConfigItem> dm2 = new DynamicMap<ConfigItem> { {"name", (SingleItem<string>) "foo"}, {"comp", new MyComposite { ss1 = null  } } };
+
+				bool thrown = false;
+				try {
+					dm.Assign(dm2);
+				} catch (ConfigItem.InvalidChildAssignmentException e) {
+					thrown = true;
+
+					Assert.Single(e.ChildExceptions);
+					var ce = e.ChildExceptions.First();
+					Assert.IsType<ConfigItem.InvalidChildAssignmentException>(ce);
+
+					var ceces = ((ConfigItem.InvalidChildAssignmentException) ce).ChildExceptions;
+					Assert.Single(ceces);
+					var cecesFirst = ceces.First();
+					Assert.IsType<ConfigItem.InvalidTypeAssignmentException>(cecesFirst);
+					var cece = (ConfigItem.InvalidTypeAssignmentException) cecesFirst;
+					Assert.Equal(new SingleItem<string>("foo"), cece.OldItem);
+					Assert.Null(cece.NewItem);
+				}
+				Assert.True(thrown);
+			}
 		}
 
 		[Fact]
